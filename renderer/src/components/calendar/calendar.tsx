@@ -51,7 +51,7 @@ export const Canlendar = () => {
 				</div>
 			</div>
 
-			<div className='calendar-grid'>
+			<div className='calendar-grid pt-5'>
 				{ header.map((val, i)=>{
 						return (
 							<div
@@ -63,6 +63,8 @@ export const Canlendar = () => {
 						)
 					})
 				}
+			</div>
+			<div className='calendar-grid h-full'>
 				{ items.map((val, i)=>{
 					let isCurrMonth = true
 					let date = time
@@ -77,7 +79,7 @@ export const Canlendar = () => {
 					}
 					else date = time.startOf('month').add(val-1, 'days')
 					return (
-						<div key={`item-${i}`}>
+						<div key={`item-${i}`} className="w-full h-full grid items-center">
 							<Item isCurrMonth={isCurrMonth} date={date}/>
 						</div>
 					)

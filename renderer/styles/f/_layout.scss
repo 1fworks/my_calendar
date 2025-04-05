@@ -1,9 +1,10 @@
 @use './media' as *;
 
 .mytheme :global {
-
+    @apply transition-colors;
+    
     button {
-        @apply rounded-md border-2;
+        @apply rounded-md border-2 transition-colors;
     }
 
     .theme-switch {
@@ -15,25 +16,35 @@
         }
     }
 
+    .overlay {
+        @apply absolute left-0 top-0 w-dvw h-dvh opacity-0 -z-10;
+        @apply transition-opacity;
+    }
+    .overlay-active {
+        @apply z-10 opacity-80;
+    }
+
     .calendar {
         @apply w-dvw;
-        height: calc(100dvh - 8rem);
+        height: calc(100dvh - 10rem);
     }
     .calendar-grid {
-        @apply grid grid-cols-7 place-items-center;
-        @apply h-full pt-10 mx-6;
-        @include media-query($on-mini) {
-            @apply pt-5;
+        @apply grid grid-cols-7 place-items-center gap-x-5 gap-y-3 mx-6;
+        @include media-query($on-mobile) {
+            @apply gap-x-3;
         }
         @include media-query-h($on-short) {
-            @apply pt-5;
+            @apply gap-x-2 gap-y-1;
+        }
+        @include media-query($on-mini) {
+            @apply gap-x-1;
         }
     }
     .current-data {
         @apply mt-14 w-fit mx-auto;
     }
     .current-day {
-        @apply w-fit mx-auto font-bold;
+        @apply w-fit mx-auto font-bold h-fit;
         font-size: 1.4rem;
         @include media-query($on-mini) {
             font-size: 1.1rem;
@@ -49,7 +60,17 @@
         @apply w-fit;
     }
     .calendar-item {
-        @apply text-lg w-fit;
+        @apply grid gap-y-1 justify-center h-full relative;
+        .calendar-circle {
+            @apply text-lg w-full h-full text-center;
+            @apply grid justify-center items-center;
+            @apply rounded-lg;
+            @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
+            div {
+                @apply w-fit h-fit;
+                line-height: 0em;
+            }
+        }
     }
     .current-day,
     .current-time,

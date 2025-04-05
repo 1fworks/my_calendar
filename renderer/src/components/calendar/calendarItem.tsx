@@ -1,4 +1,5 @@
 import { Dayjs } from "dayjs"
+import { useState } from "react"
 
 export const Item = ({
 	isCurrMonth,
@@ -7,9 +8,14 @@ export const Item = ({
 	isCurrMonth:boolean,
 	date:Dayjs
 }) => {
+  const [ selected, setSelected ] = useState(false)
 	return (
 		<div className={`calendar-item ${isCurrMonth?'font-bold':'opacity-50'}`}>
-			{date.format('D')}
+      <button className="calendar-circle">
+        <div>
+          {date.format('D')}
+        </div>
+      </button>
 		</div>
 	)
 }
