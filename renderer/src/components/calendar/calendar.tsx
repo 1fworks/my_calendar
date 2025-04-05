@@ -39,52 +39,54 @@ export const Canlendar = () => {
 	}
 
 	return (
-		<div className="calendar">
-			<CurrTime />
-			<div>
-				<div className="current-data grid grid-flow-col items-center">
-					<button className="mr-3 p-2" onClick={prevPage}><BsChevronLeft /></button>
-					<div className="w-fit">
-						<div className="current-day">{time.format('YYYY MMM')}</div>
+		<>
+			<div className="calendar">
+				<CurrTime />
+				<div>
+					<div className="current-data grid grid-flow-col items-center">
+						<button className="mr-3 p-2" onClick={prevPage}><BsChevronLeft /></button>
+						<div className="w-fit">
+							<div className="current-day">{time.format('YYYY MMM')}</div>
+						</div>
+						<button className="ml-3 p-2" onClick={nextPage}><BsChevronRight /></button>
 					</div>
-					<button className="ml-3 p-2" onClick={nextPage}><BsChevronRight /></button>
 				</div>
-			</div>
 
-			<div className='calendar-grid pt-5'>
-				{ header.map((val, i)=>{
+				<div className='calendar-grid pt-5'>
+					{ header.map((val, i)=>{
+							return (
+								<div
+									key={`day-${val}`}
+									className={`calendar-day ${(i===0||i===6)?'font-bold opacity-80':'opacity-70'}`}
+								>
+									{val}
+								</div>
+							)
+						})
+					}
+				</div>
+				<div className='calendar-grid h-full'>
+					{ items.map((val, i)=>{
+						let isCurrMonth = true
+						let date = time
+						if(val < 0) {
+							isCurrMonth = false
+							if(i < 7) {
+								date = time.startOf('month').subtract(Math.abs(val), 'days')
+							}
+							else {
+								date = time.endOf('month').add(Math.abs(val), 'days')
+							}
+						}
+						else date = time.startOf('month').add(val-1, 'days')
 						return (
-							<div
-								key={`day-${val}`}
-								className={`calendar-day ${(i===0||i===6)?'font-bold opacity-80':'opacity-70'}`}
-							>
-								{val}
+							<div key={`item-${i}`} className="w-full h-full grid items-center">
+								<Item isCurrMonth={isCurrMonth} date={date}/>
 							</div>
 						)
-					})
-				}
+					}) }
+				</div>
 			</div>
-			<div className='calendar-grid h-full'>
-				{ items.map((val, i)=>{
-					let isCurrMonth = true
-					let date = time
-					if(val < 0) {
-						isCurrMonth = false
-						if(i < 7) {
-							date = time.startOf('month').subtract(Math.abs(val), 'days')
-						}
-						else {
-							date = time.endOf('month').add(Math.abs(val), 'days')
-						}
-					}
-					else date = time.startOf('month').add(val-1, 'days')
-					return (
-						<div key={`item-${i}`} className="w-full h-full grid items-center">
-							<Item isCurrMonth={isCurrMonth} date={date}/>
-						</div>
-					)
-				}) }
-			</div>
-		</div>
+		</>
 	)
 }

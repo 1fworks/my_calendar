@@ -6,16 +6,33 @@ export const Item = ({
 	date,
 }:{
 	isCurrMonth:boolean,
-	date:Dayjs
+	date:Dayjs,
 }) => {
-  const [ selected, setSelected ] = useState(false)
+  const [ active, setActive ] = useState(false)
+
+  const closeDetail = () => {
+    setActive(false)
+  }
+
+  const showDetail = () => {
+    if(!active) {
+      setActive(true)
+    }
+  }
+
 	return (
-		<div className={`calendar-item ${isCurrMonth?'font-bold':'opacity-50'}`}>
-      <button className="calendar-circle">
-        <div>
-          {date.format('D')}
-        </div>
-      </button>
-		</div>
+    <>
+      <div
+        className={`overlay ${active?'overlay-active':''}`}
+        onClick={closeDetail}
+      />
+      <div className={`calendar-item ${isCurrMonth?'font-bold':'opacity-50'}`}>
+        <button className="calendar-circle" onClick={showDetail}>
+          <div>
+            {date.format('D')}
+          </div>
+        </button>
+      </div>
+    </>
 	)
 }

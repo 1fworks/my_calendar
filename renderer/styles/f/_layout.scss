@@ -17,11 +17,11 @@
     }
 
     .overlay {
-        @apply absolute left-0 top-0 w-dvw h-dvh opacity-0 -z-10;
+        @apply absolute left-0 top-0 w-dvw h-dvh opacity-0 -z-[1];
         @apply transition-opacity;
     }
     .overlay-active {
-        @apply z-10 opacity-80;
+        @apply z-10 opacity-80 cursor-pointer;
     }
 
     .calendar {
