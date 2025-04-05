@@ -10,7 +10,7 @@ const config = defineConfig({
   globalCss: {
     html: {
       scrollbar: 'hidden',
-      colorPalette: 'pink'
+      // colorPalette: 'pink'
     },
   },
 })

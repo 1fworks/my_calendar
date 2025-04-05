@@ -9,8 +9,11 @@ module.exports = {
     colors: {
       // use colors only specified
       white: colors.white,
-      gray: colors.gray,
-      blue: colors.blue,
+      black: colors.black,
+    },
+    screens: {
+      'mobile': '768px',
+      'mini': '400px',
     },
     extend: {},
   },
