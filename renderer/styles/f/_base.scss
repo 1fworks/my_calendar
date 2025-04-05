@@ -1,0 +1,11 @@
+@use './media' as *;
+
+.mytheme :global {
+    font-family: var(--pretendard-font);
+    button {
+        @apply border-[#e4e4e4];
+        &:hover {
+            @apply bg-[#e4e4e4];
+        }
+    }
+}

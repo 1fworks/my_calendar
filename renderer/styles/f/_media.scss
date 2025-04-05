@@ -1,0 +1,16 @@
+@use 'sass:math';
+
+$on-mini: 320px;
+$on-mobile: 768px;
+
+@mixin media-query($device) {
+    @media screen and (max-width: $device) {
+        @content;
+    }
+}
+
+@mixin media-query-opposite($device) {
+    @media screen and (min-width: ($device + 1px)) {
+        @content;
+    }
+}

@@ -1,0 +1,12 @@
+@use './media' as *;
+
+[data-theme="dark"] {
+    .mytheme :global {
+        button {
+            @apply border-[#292929];
+            &:hover {
+                @apply bg-[#292929];
+            }
+        }
+    }
+}

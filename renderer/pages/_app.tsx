@@ -1,27 +1,40 @@
 import React from 'react'
 import type { AppProps } from 'next/app'
 
-import { Logo } from '@/components/my_logo'
-import { Provider } from '@/components/ui/provider'
-import { ColorModeButton } from '@/components/ui/color-mode'
+import { ThemeProvider } from 'next-themes'
+import localFont from 'next/font/local'
 
 import '../styles/globals.css'
+import style from '../styles/main.module.scss'
+import { Header } from '@/components/header/header'
+import { useMediaQuery } from 'usehooks-ts'
+import { Logo } from '@/components/header/my_logo'
 
-import { useMediaQuery } from '@chakra-ui/react'
-import { Button } from '@chakra-ui/react'
+const pretendard = localFont({
+  src: '../public/font/PretendardVariable.woff2',
+  display: 'block',
+  weight: '45 920',
+  style: 'normal',
+  variable: '--pretendard-font'
+})
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const oh_no = useMediaQuery(['(min-width: 250px)', '(min-height:300px)']).indexOf(false)>-1
-
+  const check = [useMediaQuery('(max-width:250px)'), useMediaQuery('(max-height:250px)')]
   return (
-    <Provider>
-      { oh_no && <Logo/> }
-      <div className={oh_no?'hidden':''}>
-        <ColorModeButton className='mx-2 my-2' />
-        <Button className='my-2 rounded-sm mobile:rounded-full'>hi</Button>
-        <Component {...pageProps} />
-      </div>
-    </Provider>
+    <div className={`${style.mytheme} ${pretendard.variable}`}>
+      <ThemeProvider>
+        { check.indexOf(true)>-1?
+          <>
+            <Logo/>
+          </>
+        :
+          <>
+            <Header/>
+            <Component {...pageProps} />
+          </>
+        }
+      </ThemeProvider>
+    </div>
   )
 }
 

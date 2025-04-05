@@ -1,0 +1,10 @@
+.mytheme :global {
+    button {
+        @apply rounded-md transition-colors border-2;
+    }
+    .theme-switch {
+        svg {
+            @apply size-6 m-2;
+        }
+    }
+}
