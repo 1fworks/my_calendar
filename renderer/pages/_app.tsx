@@ -3,12 +3,12 @@ import type { AppProps } from 'next/app'
 
 import { ThemeProvider } from 'next-themes'
 import localFont from 'next/font/local'
+import { useMediaQuery } from 'usehooks-ts'
 
 import '../styles/globals.css'
 import style from '../styles/main.module.scss'
-import { Header } from '@/components/header/header'
-import { useMediaQuery } from 'usehooks-ts'
-import { Logo } from '@/components/header/my_logo'
+import { ThemeSwitch } from "@/components/themeSwitch"
+import { Logo } from '@/components/my_logo'
 
 const pretendard = localFont({
   src: '../public/font/PretendardVariable.woff2',
@@ -29,7 +29,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           </>
         :
           <>
-            <Header/>
+            <ThemeSwitch/>
             <Component {...pageProps} />
           </>
         }

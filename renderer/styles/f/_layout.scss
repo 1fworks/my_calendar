@@ -1,10 +1,54 @@
+@use './media' as *;
+
 .mytheme :global {
+
     button {
-        @apply rounded-md transition-colors border-2;
+        @apply rounded-md border-2;
     }
+
     .theme-switch {
         svg {
             @apply size-6 m-2;
+            @include media-query($on-mini) {
+                @apply size-5;
+            }
         }
+    }
+
+    .calendar-grid {
+        @apply grid grid-cols-7 place-items-center gap-y-5;
+        @apply mt-10 mx-6;
+        @include media-query($on-mini) {
+            @apply mt-5;
+        }
+    }
+    .current-data {
+        @apply mt-14 w-fit mx-auto;
+    }
+    .current-day {
+        @apply w-fit mx-auto font-bold;
+        font-size: 1.4rem;
+        @include media-query($on-mini) {
+            font-size: 1.1rem;
+        }
+    }
+    .current-time {
+        @apply absolute top-0 right-0 mt-1 mr-2 w-fit opacity-50;
+        @include media-query($on-mobile) {
+            @apply text-sm;
+        }
+    }
+    .calendar-day {
+        @apply w-fit;
+    }
+    .calendar-item {
+        @apply text-lg w-fit;
+    }
+    .current-day,
+    .current-time,
+    .calendar-day,
+    .calendar-item
+    {
+        @apply select-none;
     }
 }

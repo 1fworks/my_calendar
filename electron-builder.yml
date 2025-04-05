@@ -1,6 +1,6 @@
-appId: com.example.nextron
-productName: My Nextron App
-copyright: Copyright © 2018 Yoshihide Shiono
+appId: work.with-1f.calendar
+productName: Amazing Calendar (Made with Nextron)
+copyright: Copyright © 2025 _ = F = _
 directories:
   output: dist
   buildResources: resources
