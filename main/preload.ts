@@ -13,6 +13,7 @@ const handler = {
       ipcRenderer.removeListener(channel, subscription)
     }
   },
+  openExternal: (url:string) => ipcRenderer.invoke("open-external", url)
 }
 
 contextBridge.exposeInMainWorld('ipc', handler)

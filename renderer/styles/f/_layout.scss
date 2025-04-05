@@ -15,11 +15,18 @@
         }
     }
 
+    .calendar {
+        @apply w-dvw;
+        height: calc(100dvh - 8rem);
+    }
     .calendar-grid {
-        @apply grid grid-cols-7 place-items-center gap-y-5;
-        @apply mt-10 mx-6;
+        @apply grid grid-cols-7 place-items-center;
+        @apply h-full pt-10 mx-6;
         @include media-query($on-mini) {
-            @apply mt-5;
+            @apply pt-5;
+        }
+        @include media-query-h($on-short) {
+            @apply pt-5;
         }
     }
     .current-data {

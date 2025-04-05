@@ -39,7 +39,7 @@ export const Canlendar = () => {
 	}
 
 	return (
-		<>
+		<div className="calendar">
 			<CurrTime />
 			<div>
 				<div className="current-data grid grid-flow-col items-center">
@@ -83,6 +83,6 @@ export const Canlendar = () => {
 					)
 				}) }
 			</div>
-		</>
+		</div>
 	)
 }

@@ -2,6 +2,7 @@
 
 $on-mini: 320px;
 $on-mobile: 768px;
+$on-short: 500px;
 
 @mixin media-query($device) {
     @media screen and (max-width: $device) {
@@ -11,6 +12,12 @@ $on-mobile: 768px;
 
 @mixin media-query-opposite($device) {
     @media screen and (min-width: ($device + 1px)) {
+        @content;
+    }
+}
+
+@mixin media-query-h($device) {
+    @media screen and (max-height: $device) {
         @content;
     }
 }
