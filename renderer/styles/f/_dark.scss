@@ -8,9 +8,24 @@
                 @apply bg-[#292929];
             }
         }
+
+        .button-style {
+            @apply border-[#646464];
+        }
+
+        .div-border {
+            @apply border-[#292929];
+            &:hover {
+                @apply border-[#4d4d4d];
+            }
+        }
         
         .overlay {
             @apply bg-[#121212];
+        }
+
+        hr {
+            @apply border-[#69696900]
         }
     }
 }

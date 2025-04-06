@@ -1,19 +1,51 @@
 @use './media' as *;
 
 .mytheme :global {
-    @apply transition-colors;
     
+    button, .button-style, .div-border {
+        @apply rounded-md border-2;
+    }
+
     button {
-        @apply rounded-md border-2 transition-colors;
+        svg {
+            @apply opacity-50;
+        }
+        &:hover {
+            @apply font-bold;
+            svg {
+                @apply opacity-100;
+            }
+        }
+    }
+
+    hr {
+        @apply my-2;
     }
 
     .theme-switch {
         svg {
-            @apply size-6 m-2;
+            @apply size-7 m-2;
             @include media-query($on-mini) {
                 @apply size-5;
             }
         }
+    }
+
+    .mini-svg {
+        svg {
+            @apply size-5 m-2;
+            @include media-query($on-mini) {
+                @apply size-4;
+            }
+        }
+    }
+
+    input {
+        @apply px-2 mx-1 w-full;
+    }
+
+    .rule-box {
+        @apply w-full h-fit p-1;
     }
 
     .overlay {
@@ -21,7 +53,10 @@
         @apply transition-opacity;
     }
     .overlay-active {
-        @apply z-10 opacity-80 cursor-pointer;
+        @apply z-10 opacity-95 cursor-pointer;
+    }
+    .overlay-box {
+        @apply w-full h-full p-10;
     }
 
     .calendar {
@@ -75,7 +110,9 @@
     .current-day,
     .current-time,
     .calendar-day,
-    .calendar-item
+    .calendar-item,
+    div,
+    p
     {
         @apply select-none;
     }

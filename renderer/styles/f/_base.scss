@@ -9,7 +9,22 @@
         }
     }
 
+    .button-style {
+        @apply border-[#b6b6b6];
+    }
+
+    .div-border {
+        @apply border-[#e4e4e4];
+        &:hover {
+            @apply border-[#bebebe];
+        }
+    }
+
     .overlay {
         @apply bg-white;
+    }
+
+    hr {
+        @apply border-[#86868600]
     }
 }
