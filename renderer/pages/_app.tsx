@@ -19,7 +19,7 @@ const pretendard = localFont({
 })
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const check = [useMediaQuery('(max-width:250px)'), useMediaQuery('(max-height:320px)')]
+  const check = [useMediaQuery('(max-width:300px)'), useMediaQuery('(max-height:320px)')]
   const [ mount, setMount ] = useState(false)
   useEffect(()=>{
     if(!mount) setMount(true)

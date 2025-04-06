@@ -10,7 +10,23 @@ module.exports = {
       'mobile': '768px',
       'mini': '400px',
     },
-    extend: {},
+    extend: {
+      animation: {
+        "climb100-animation": "climb100-kf 300ms ease forwards",
+      },
+      keyframes: {
+        "climb100-kf": {
+          from: {
+            transform: "translateY(-2.5rem);",
+            opacity: "0%;",
+          },
+          to: {
+            transform: "translateY(0);",
+            opacity: "100%;",
+          }
+        },
+      },
+    },
   },
   plugins: [],
 }

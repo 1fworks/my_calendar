@@ -1,9 +1,10 @@
 @use './media' as *;
 
 .mytheme :global {
-    
+    @apply transition-colors;
+
     button, .button-style, .div-border {
-        @apply rounded-md border-2;
+        @apply rounded-md border-2 transition-colors;
     }
 
     button {
@@ -20,6 +21,10 @@
 
     hr {
         @apply my-2;
+    }
+
+    .date-text {
+        @apply text-lg font-bold;
     }
 
     .theme-switch {
@@ -48,15 +53,22 @@
         @apply w-full h-fit p-1;
     }
 
+    .memo {
+        @apply w-full m-0;
+    }
+
     .overlay {
         @apply absolute left-0 top-0 w-dvw h-dvh opacity-0 -z-[1];
-        @apply transition-opacity;
+        // @apply transition-opacity;
     }
     .overlay-active {
-        @apply z-10 opacity-95 cursor-pointer;
+        @apply z-10 opacity-100; // cursor-pointer
     }
     .overlay-box {
-        @apply w-full h-full p-10;
+        @apply w-full max-w-3xl h-full p-10 mx-auto;
+        @include media-query($on-short) {
+            @apply p-3;
+        }
     }
 
     .calendar {
@@ -107,13 +119,20 @@
             }
         }
     }
+    .item-detail {
+        @apply opacity-50 transition-opacity;
+        &:hover {
+            @apply opacity-100;
+        }
+    }
     .current-day,
     .current-time,
     .calendar-day,
     .calendar-item,
     div,
-    p
+    p,
+    span
     {
-        @apply select-none;
+        @apply select-none text-nowrap;
     }
 }

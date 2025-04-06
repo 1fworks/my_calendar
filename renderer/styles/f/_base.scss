@@ -16,7 +16,7 @@
     .div-border {
         @apply border-[#e4e4e4];
         &:hover {
-            @apply border-[#bebebe];
+            @apply border-[#949494];
         }
     }
 
@@ -26,5 +26,9 @@
 
     hr {
         @apply border-[#86868600]
+    }
+
+    .date-text {
+        @apply bg-white;
     }
 }
