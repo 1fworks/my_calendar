@@ -5,6 +5,7 @@ import { BiPlusCircle } from "react-icons/bi";
 import { FaSave } from "react-icons/fa";
 import { DividingLine } from "./dividingLine";
 import { CanlendarItemDetail } from "./calendarItemDetail";
+import { ItemInfo } from "./ItemInfo";
 
 export const Item = ({
 	isCurrMonth,
@@ -76,12 +77,16 @@ export const Item = ({
       }
       </div>
       {/* ----------------------------------------------------- */}
-      <div className={`calendar-item ${isCurrMonth?'font-bold':'opacity-50'}`}>
-        <button className="calendar-circle" onClick={showDetail}>
-          <div>
-            {date.format('D')}
-          </div>
-        </button>
+      <div className="calendar-item-cover w-full h-full">
+        <div className="item-overlay-shadow" />
+        <div className={`calendar-item ${isCurrMonth?'font-bold':'opacity-50'}`}>
+          <ItemInfo />
+          <button className="calendar-circle" onClick={showDetail}>
+            <div>
+              {date.format('D')}
+            </div>
+          </button>
+        </div>
       </div>
     </>
 	)

@@ -64,7 +64,7 @@
             @apply absolute left-0 top-0 right-0 bottom-0 opacity-0 -z-10 transition-opacity;
         }
         .drawer {
-            @apply absolute left-0 top-0 bottom-0 max-w-80 w-10/12 cursor-default;
+            @apply absolute left-0 top-0 bottom-0 max-w-96 w-10/12 cursor-default;
             @apply -translate-x-full transition-transform duration-500;
         }
     }
@@ -122,6 +122,20 @@
     .calendar-day {
         @apply w-fit;
     }
+    .calendar-item-cover {
+        .item-overlay-shadow {
+            @apply absolute left-0 top-0 right-0 bottom-0 pointer-events-none z-[1];
+            @apply opacity-0 transition-opacity delay-300 duration-500;
+        }
+        &:hover {
+            .item-overlay-shadow {
+                @apply opacity-80;
+            }
+            .calendar-item {
+                @apply z-10;
+            }
+        }
+    }
     .calendar-item {
         @apply grid gap-y-1 justify-center h-full relative;
         .calendar-circle {
@@ -132,6 +146,18 @@
             div {
                 @apply w-fit h-fit;
                 line-height: 0em;
+            }
+        }
+        .item-info {
+            @apply absolute w-fit pointer-events-none z-10;
+            @apply opacity-0 scale-0 transition-all origin-bottom;
+            .item-info-box {
+                @apply px-3 py-1;
+            }
+        }
+        &:hover {
+            .item-info {
+                @apply opacity-100 scale-100 z-10;
             }
         }
     }
@@ -150,5 +176,17 @@
     span
     {
         @apply select-none text-nowrap;
+    }
+    .memo-content {
+        @apply text-wrap break-words;
+    }
+    .val-plus {
+        @apply text-teal-500;
+    }
+    .val-minus {
+        @apply text-orange-500;
+    }
+    .val-update {
+        @apply text-purple-500;
     }
 }

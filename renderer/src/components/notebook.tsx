@@ -1,5 +1,6 @@
 import { FaRegNoteSticky } from "react-icons/fa6";
 import { FaHeart, FaHeartBroken } from "react-icons/fa";
+import { FiEdit } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
 import { useEffect, useState } from "react";
 
@@ -17,7 +18,7 @@ export const NoteBook = () => {
         <div className="overlay-shadow" />
         <div className="drawer" onClick={e=>e.stopPropagation()}>
           { active && 
-            <div className="w-full flex flex-col gap-2">
+            <div className="w-full h-full flex flex-col gap-2">
               <div className="w-full ml-auto pt-2 pl-4 pr-2 flex flex-row items-center gap-2">
                 <span className="flex-1 font-bold text-lg">메모지</span>
                 <button
@@ -29,23 +30,56 @@ export const NoteBook = () => {
                   <MdCancel />
                 </button>
               </div>
-              { [1, 2, 3, 4, 5].map((element, i)=>{
-                return (
-                  <div className="mx-2 p-2 div-border mini-svg h-fit flex flex-row gap-2">
-                    <div className="w-fit h-fit">
-                      <button className="theme-switch"><FaHeart /></button>
-                    </div>
-                    <div className="flex-1 flex flex-col">
-                      <div className="text-sm">
-                        2025년 1월 1일
+              <div className="relative flex-1 overflow-y-scroll mr-2 pb-3">
+                <div className="flex flex-col gap-2">
+                  { [1, 2, 3, 4, 5].map((element, i)=>{
+                    return (
+                      <div
+                        className="mx-2 p-2 div-border mini-svg h-fit flex flex-row gap-2"
+                        key={`memo - ${i}`}
+                      >
+                        <div className="w-fit h-fit">
+                          <button className="theme-switch"><FaHeart /></button>
+                        </div>
+                        <div className="flex-1 flex flex-col">
+                          <div className="text-sm">
+                            2025년 1월 1일
+                          </div>
+                          <div className="memo-content">
+                            메모 내용
+                          </div>
+                        </div>
+                        <div className="w-fit h-fit">
+                          <button className="theme-switch"><FiEdit /></button>
+                        </div>
                       </div>
-                      <div>
-                        메모 내용
+                    )
+                  })}
+                  { [1, 2, 3, 4, 5].map((element, i)=>{
+                    return (
+                    <div
+                      className="item-detail mx-2 p-2 div-border mini-svg h-fit flex flex-row gap-2"
+                      key={`memo _ ${i}`}
+                    >
+                      <div className="w-fit h-fit">
+                        <button className="theme-switch"><FaHeartBroken /></button>
+                      </div>
+                      <div className="flex-1 flex flex-col">
+                        <div className="text-sm">
+                          2025년 1월 1일
+                        </div>
+                        <div>
+                          메모 내용
+                        </div>
+                      </div>
+                      <div className="w-fit h-fit">
+                        <button className="theme-switch"><FiEdit /></button>
                       </div>
                     </div>
-                  </div>
-                )
-              })}
+                    )
+                  })}
+                </div>
+              </div>
             </div>
           }
         </div>

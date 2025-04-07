@@ -23,12 +23,15 @@
     .overlay-shadow {
         @apply bg-[#00000086];
     }
-    .overlay-shadow-full, .drawer {
+    .overlay-shadow-full, .drawer, .item-overlay-shadow {
         @apply bg-white;
+    }
+    .item-info-box {
+        @apply bg-[#ffffffcc];
     }
 
     hr {
-        @apply border-[#86868600]
+        @apply border-[#868686]
     }
 
     .date-text {
