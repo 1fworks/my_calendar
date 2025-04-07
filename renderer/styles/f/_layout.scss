@@ -58,11 +58,27 @@
     }
 
     .overlay {
-        @apply absolute left-0 top-0 w-dvw h-dvh opacity-0 -z-[1];
+        @apply absolute left-0 top-0 w-dvw h-dvh -z-[1] transition-[z-index];
         // @apply transition-opacity;
+        .overlay-shadow, .overlay-shadow-full {
+            @apply absolute left-0 top-0 right-0 bottom-0 opacity-0 -z-10 transition-opacity;
+        }
+        .drawer {
+            @apply absolute left-0 top-0 bottom-0 max-w-80 w-10/12 cursor-default;
+            @apply -translate-x-full transition-transform duration-500;
+        }
     }
     .overlay-active {
-        @apply z-10 opacity-100; // cursor-pointer
+        @apply z-50; // cursor-pointer
+        .overlay-shadow {
+            @apply opacity-80;
+        }
+        .overlay-shadow-full {
+            @apply opacity-100;
+        }
+        .drawer {
+            @apply shadow-lg translate-x-0;
+        }
     }
     .overlay-box {
         @apply w-full max-w-3xl h-full p-10 mx-auto;

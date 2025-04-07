@@ -30,7 +30,7 @@ export const Item = ({
       <div
         className={`overlay ${active?'overlay-active':'hidden'}`}
         // onClick={closeDetail}
-      >
+      > <div className="overlay-shadow-full" />
       { active &&
         <div className="overlay-box">
           <div className="w-full h-full relative p-2 cursor-default flex flex-col" onClick={e=>e.stopPropagation()}>

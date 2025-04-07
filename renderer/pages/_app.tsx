@@ -7,7 +7,6 @@ import { useMediaQuery } from 'usehooks-ts'
 
 import '../styles/globals.css'
 import style from '../styles/main.module.scss'
-import { ThemeSwitch } from "@/components/themeSwitch"
 import { Logo } from '@/components/my_logo'
 
 const pretendard = localFont({
@@ -33,7 +32,6 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Logo/>
         </div>
         <div className={`${check.indexOf(true)>-1?'hidden':''}`}>
-          <ThemeSwitch/>
           <Component {...pageProps} />
         </div>
       </ThemeProvider>

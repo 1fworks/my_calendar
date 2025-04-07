@@ -15,7 +15,7 @@ export const ThemeSwitch = () => {
 	
 	return (
 		<button
-			className="m-2 absolute top-0 left-0 theme-switch"
+			className="theme-switch"
 			onClick={()=>{
 				if(theme === 'dark') setTheme('light')
 				else setTheme('dark')

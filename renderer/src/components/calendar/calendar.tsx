@@ -3,6 +3,8 @@ import my_dayjs from "@/lib/mydayjs"
 import { Item } from './calendarItem'
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { CurrTime } from "./currTime";
+import { ThemeSwitch } from "../themeSwitch";
+import { NoteBook } from "../notebook";
 
 export const Canlendar = () => {
 	const [ time, setTime ] = useState(my_dayjs('1111-1-1'))
@@ -41,6 +43,10 @@ export const Canlendar = () => {
 	return (
 		<>
 			<div className="calendar">
+				<div className="p-2 absolute top-0 left-0 flex flex-row gap-2">
+					<NoteBook />
+					<ThemeSwitch />
+				</div>
 				<CurrTime />
 				<div>
 					<div className="current-data grid grid-flow-col items-center">

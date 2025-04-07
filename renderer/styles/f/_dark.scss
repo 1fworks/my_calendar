@@ -20,7 +20,10 @@
             }
         }
         
-        .overlay {
+        .overlay-shadow {
+            @apply bg-black;
+        }
+        .overlay-shadow-full, .drawer {
             @apply bg-[#121212];
         }
 
