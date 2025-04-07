@@ -52,7 +52,7 @@ export const Canlendar = () => {
 					<div className="current-data grid grid-flow-col items-center">
 						<button className="mr-3 p-2" onClick={prevPage}><BsChevronLeft /></button>
 						<div className="w-fit">
-							<div className="current-day">{time.format('YYYY MMM')}</div>
+							<button className="current-day px-3">{time.format('YYYY MMM')}</button>
 						</div>
 						<button className="ml-3 p-2" onClick={nextPage}><BsChevronRight /></button>
 					</div>
