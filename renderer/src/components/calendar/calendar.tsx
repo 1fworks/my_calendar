@@ -8,19 +8,26 @@ import { NoteBook } from "../notebook";
 
 export const Canlendar = () => {
 	const [ time, setTime ] = useState(my_dayjs('1111-1-1'))
+	const [ date, setDate ] = useState('')
 
 	useEffect(() => {
 		if(time.valueOf() === my_dayjs('1111-1-1').valueOf()) {
-			setTime(my_dayjs())
+			const now = my_dayjs()
+			setTime(now)
+			setDate(now.format('YYYY-MM'))
 		}
 	}, []);
 
 	const nextPage = () => {
-    setTime(time.add(1, 'month'))
+		const t = time.add(1, 'month')
+    setTime(t)
+		setDate(t.format('YYYY-MM'))
   }
 
   const prevPage = () => {
-    setTime(time.subtract(1, 'month'))
+		const t = time.subtract(1, 'month')
+		setTime(t)
+		setDate(t.format('YYYY-MM'))
   }
 
 	const header = [1, 2, 3, 4, 5, 6, 7].map(val=>{
@@ -50,48 +57,66 @@ export const Canlendar = () => {
 				<CurrTime />
 				<div>
 					<div className="current-data grid grid-flow-col items-center">
-						<button className="mr-3 p-2" onClick={prevPage}><BsChevronLeft /></button>
-						<div className="w-fit">
-							<button className="current-day px-3">{time.format('YYYY MMM')}</button>
+						<button className="mr-2 p-2" onClick={prevPage}><BsChevronLeft /></button>
+						<div className="w-fit flex flex-row gap-1">
+              <input
+								className="year-month div-border font-bold"
+								value={date}
+								type="month"
+								onChange={(e)=>{
+									setDate(e.target.value)
+									if(e.target.value.length !== 0) {
+										const tmp = e.target.value.split('-')
+										setTime(my_dayjs().year(
+											Math.min(Math.max(parseInt(tmp[0]), 1900), 9999)
+										).month(
+											Math.min(Math.max(parseInt(tmp[1])-1, 0), 11)
+										))
+									}
+								}}
+							/>
 						</div>
-						<button className="ml-3 p-2" onClick={nextPage}><BsChevronRight /></button>
+						<button className="ml-2 p-2" onClick={nextPage}><BsChevronRight /></button>
 					</div>
 				</div>
-
-				<div className='calendar-grid pt-5'>
-					{ header.map((val, i)=>{
-							return (
-								<div
-									key={`day-${val}`}
-									className={`calendar-day ${(i===0||i===6)?'font-bold opacity-80':'opacity-70'}`}
-								>
-									{val}
-								</div>
-							)
-						})
-					}
-				</div>
-				<div className='calendar-grid h-full'>
-					{ items.map((val, i)=>{
-						let isCurrMonth = true
-						let date = time
-						if(val < 0) {
-							isCurrMonth = false
-							if(i < 7) {
-								date = time.startOf('month').subtract(Math.abs(val), 'days')
+				{ date.split('-').length > 0 && parseInt(date.split('-')[0]) >= 1900 &&
+					<>
+						<div className='calendar-grid pt-5'>
+							{ header.map((val, i)=>{
+									return (
+										<div
+											key={`day-${val}`}
+											className={`calendar-day ${(i===0||i===6)?'font-bold opacity-80':'opacity-70'}`}
+										>
+											{val}
+										</div>
+									)
+								})
 							}
-							else {
-								date = time.endOf('month').add(Math.abs(val), 'days')
-							}
-						}
-						else date = time.startOf('month').add(val-1, 'days')
-						return (
-							<div key={`item-${i}`} className="w-full h-full grid items-center">
-								<Item isCurrMonth={isCurrMonth} date={date}/>
-							</div>
-						)
-					}) }
-				</div>
+						</div>
+						<div className='calendar-grid h-full'>
+							{ items.map((val, i)=>{
+								let isCurrMonth = true
+								let date = time
+								if(val < 0) {
+									isCurrMonth = false
+									if(i < 7) {
+										date = time.startOf('month').subtract(Math.abs(val), 'days')
+									}
+									else {
+										date = time.endOf('month').add(Math.abs(val), 'days')
+									}
+								}
+								else date = time.startOf('month').add(val-1, 'days')
+								return (
+									<div key={`item-${i}`} className="w-full h-full grid items-center">
+										<Item isCurrMonth={isCurrMonth} date={date}/>
+									</div>
+								)
+							}) }
+						</div>
+					</>
+				}
 			</div>
 		</>
 	)

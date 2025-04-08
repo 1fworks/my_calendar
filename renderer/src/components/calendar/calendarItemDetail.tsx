@@ -16,7 +16,7 @@ const Rule = ({
   },
 }) => {
   return (
-    <div className="div-border rule-box flex flex-col items-center">
+    <div className="div-border div-border-l-8 rule-box flex flex-col items-center">
       <div className="w-full flex flex-row items-center">
         <div className="mini-svg">
           <PiArrowBendDownRightBold />
@@ -36,38 +36,38 @@ const Rule = ({
       { ruleData.rule === 'rule-1' && /* 매년 n월 n일 */
         <div className="flex flex-row items-center justify-center">
           <span>매년</span>
-          <input className="h-fit div-border max-w-10"></input>
+          <input type="number" min="1" max="12" className="h-fit div-border max-w-16"></input>
           <span>월</span>
-          <input className="h-fit div-border max-w-10"></input>
+          <input type="number" min="1" max="31" className="h-fit div-border max-w-16"></input>
           <span>일 마다</span>
         </div>
       }
       { ruleData.rule === 'rule-2' && /* 매달 n일 */
         <div className="flex flex-row items-center justify-center">
           <span>매달</span>
-          <input className="h-fit div-border max-w-10"></input>
+          <input type="number" min="1" max="31" className="h-fit div-border max-w-16"></input>
           <span>일 마다</span>
         </div>
       }
       { ruleData.rule === 'rule-4' && /* 매주 *요일 */
-        <div className="flex flex-row items-center justify-center">
-          <span className="mr-2">매주</span>
+        <div className="flex flex-row gap-[0.1rem] items-center justify-center mb-2">
+          <span className="mr-1">매주</span>
           {
             ['월','화','수','목','금','토','일'].map((val, i)=>{
               return (
                 <div className="flex flex-col items-center justify-center" key={`key ${val}`}>
                   <label>{val}</label>
-                  <input type="checkbox" name={`n-${i}`} value={`n-${i}`} />
+                  <input className="size-4" type="checkbox" name={`n-${i}`} value={`n-${i}`} />
                 </div>
               )
             })
           }
-          <span className="ml-2">마다</span>
+          <span className="ml-1">마다</span>
         </div>
       }
       { ruleData.rule === 'rule-6' && /* n일 간격으로 */
         <div className="flex flex-row items-center justify-center">
-          <input className="h-fit div-border max-w-14"></input>
+          <input type="number" min="1" className="h-fit div-border max-w-20"></input>
           <span>일 간격으로</span>
         </div>
       }
@@ -76,7 +76,7 @@ const Rule = ({
           <FaArrowLeft/>{/* <TiMinus/><TiPlus/> */}
           <FaEquals/>
         </button>
-        <input className="h-fit div-border"></input>
+        <input type="number" className="h-fit div-border"></input>
       </div>
     </div>
   )
@@ -131,14 +131,14 @@ export const CanlendarItemDetail = () => {
             <FaArrowLeft/>{/* <TiMinus/><TiPlus/> */}
             <FaEquals/>
           </button>
-          <input className="div-border"></input>
+          <input type="number" className="div-border"></input>
         </div>
         <button className="theme-switch ml-auto"><RiDeleteBin2Fill/></button>
 
       </div>
 
       <button
-        className="w-full mini-svg flex flex-row items-center z-10"
+        className="w-full div-border-l-8 mini-svg flex flex-row items-center z-10"
         onClick={()=>{
           setOpenRule(!openRule)
         }}
@@ -157,7 +157,7 @@ export const CanlendarItemDetail = () => {
               )
             })
           }
-          <button className="w-full mini-svg flex flex-row items-center justify-center">
+          <button className="w-full div-border-l-8 mini-svg flex flex-row items-center justify-center">
             <LuBookPlus />
             <span>add rule</span>
           </button>

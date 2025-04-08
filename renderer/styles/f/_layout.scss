@@ -7,7 +7,12 @@
         @apply rounded-md border-2 transition-colors;
     }
 
+    .div-border-l-8 {
+        @apply border-l-8;
+    }
+
     button {
+        @apply transition-[font-weight];
         svg {
             @apply opacity-50;
         }
@@ -105,6 +110,12 @@
     }
     .current-data {
         @apply mt-14 w-fit mx-auto;
+        .year-month {
+            @apply text-lg;
+            @include media-query($on-mini) {
+                @apply text-base;
+            }
+        }
     }
     .current-day {
         @apply w-fit mx-auto font-bold h-fit;
@@ -144,13 +155,12 @@
             @apply rounded-lg;
             @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
             div {
-                @apply w-fit h-fit;
-                line-height: 0em;
+                line-height: 1rem;
             }
         }
         .item-info {
             @apply absolute w-fit pointer-events-none z-10;
-            @apply opacity-0 scale-0 transition-all origin-bottom;
+            @apply opacity-0 scale-0 transition-all;
             .item-info-box {
                 @apply px-3 py-1;
             }
@@ -188,5 +198,9 @@
     }
     .val-update {
         @apply text-purple-500;
+    }
+    .ping {
+        @apply absolute rounded-full bg-rose-400 opacity-50;
+        @apply size-2;
     }
 }
