@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import { CalendarItemInfo } from "./calendar";
 
 const info_margin = 10; // px
 const state = ['', 'val-update', 'val-plus', 'val-minus']
@@ -7,14 +8,7 @@ const state_msg = ['', '(update)', '(+)', '(-)']
 export const ItemInfo = ({
   info
 }:{
-  info: {
-    ary: {
-      alias: string,
-      value: number,
-      state: number,
-    }[],
-    memo: string | undefined
-  }
+  info: CalendarItemInfo
 }) => {
   const divRef = useRef<HTMLDivElement>(null)
   const [ pos, setPos ] = useState({

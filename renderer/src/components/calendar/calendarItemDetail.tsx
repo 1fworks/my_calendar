@@ -5,15 +5,12 @@ import { FaEquals, FaArrowLeft } from "react-icons/fa";
 import { LuBookPlus } from "react-icons/lu";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { useEffect, useState } from "react";
+import { CalendarRule, CalendarRulesInfo } from "./calendar";
 
 const Rule = ({
   ruleData,
 }:{
-  ruleData: {
-    rule: string,
-    value: number[],
-    operation: number
-  },
+  ruleData: CalendarRule,
 }) => {
   return (
     <div className="div-border div-border-l-8 rule-box flex flex-col items-center">
@@ -82,41 +79,9 @@ const Rule = ({
   )
 }
 
-export const CanlendarItemDetail = () => {
-  const [ inputVal, setInputVal ] = useState<string>('휴가')
+export const CanlendarItemDetail = ({ruleDetail}:{ruleDetail:CalendarRulesInfo}) => {
+  const [ inputVal, setInputVal ] = useState<string>(ruleDetail.alias)
   const [ openRule, setOpenRule ] = useState<boolean>(false)
-  const [ ruleDetail, setRuleDetail ] = useState([
-    {
-      rule: 'rule-1',
-      value: [1, 1, 1, 1, 1, 1, 1],
-      operation: 0
-    },
-    {
-      rule: 'rule-2',
-      value: [1, 1, 1, 1, 1, 1, 1],
-      operation: 0
-    },
-    {
-      rule: 'rule-3',
-      value: [1, 1, 1, 1, 1, 1, 1],
-      operation: 0
-    },
-    {
-      rule: 'rule-4',
-      value: [1, 1, 1, 1, 1, 1, 1],
-      operation: 0
-    },
-    {
-      rule: 'rule-5',
-      value: [1, 1, 1, 1, 1, 1, 1],
-      operation: 0
-    },
-    {
-      rule: 'rule-6',
-      value: [1, 1, 1, 1, 1, 1, 1],
-      operation: 0
-    }
-  ])
 
   return (
     <div className="item-detail flex flex-col gap-1">
@@ -149,7 +114,7 @@ export const CanlendarItemDetail = () => {
       { openRule &&
         <div className="flex flex-col gap-1 animate-climb100-animation">
           {
-            ruleDetail.map((element, i)=>{
+            ruleDetail.rules.map((element, i)=>{
               return (
                 <div key={`rule ${i}`}>
                   <Rule ruleData={element}/>

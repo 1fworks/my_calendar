@@ -6,39 +6,12 @@ import { FaSave } from "react-icons/fa";
 import { DividingLine } from "./dividingLine";
 import { CanlendarItemDetail } from "./calendarItemDetail";
 import { ItemInfo } from "./ItemInfo";
-
-const info_dummy_data = {
-  ary: [
-    {
-      alias: 'alias',
-      value: 100,
-      state: 0, // normal update plus minus
-    },
-    {
-      alias: 'alias',
-      value: 100,
-      state: 1,
-    },
-    {
-      alias: 'alias',
-      value: 100,
-      state: 2,
-    },
-    {
-      alias: 'alias',
-      value: 100,
-      state: 3,
-    }
-  ],
-  memo: 'test memo'
-}
+import { CalendarItemDataset } from "./calendar";
 
 export const Item = ({
-	isCurrMonth,
-	date,
+	itemDetail
 }:{
-	isCurrMonth:boolean,
-	date:Dayjs,
+	itemDetail:CalendarItemDataset
 }) => {
   const [ active, setActive ] = useState(false)
 
@@ -67,7 +40,7 @@ export const Item = ({
               </button>
               <div className="w-full flex flex-row justify-center items-center">
                 <div className="date-text">
-                  {date.format('LL')}
+                  {itemDetail.date.format('LL')}
                 </div>
               </div>
               <button className="theme-switch" onClick={closeDetail}>  
@@ -82,10 +55,10 @@ export const Item = ({
                 </div>
                 <DividingLine />
                 {
-                  [1, 2, 3].map((element, i)=>{
+                  itemDetail.info.ary.map((element, i)=>{
                     return (
                       <div key={`item d ${i}`} className="flex flex-col gap-1">
-                        <CanlendarItemDetail />
+                        <CanlendarItemDetail ruleDetail={element} />
                         <DividingLine />
                       </div>
                     )
@@ -105,14 +78,16 @@ export const Item = ({
       {/* ----------------------------------------------------- */}
       <div className="calendar-item-cover w-full h-full">
         <div className="item-overlay-shadow" />
-        <div className={`calendar-item ${isCurrMonth?'font-bold':'opacity-50'}`}>
-          <ItemInfo info={info_dummy_data}/>
-          <button className={`calendar-circle ${'underline underline-offset-4 decoration-2'}`} onClick={showDetail}>
+        <div className={`calendar-item ${itemDetail.isCurrMonth?'font-bold':'opacity-50'}`}>
+          <ItemInfo info={itemDetail.info}/>
+          <button className={`calendar-circle ${itemDetail.info.memo.length > 0?'underline underline-offset-4 decoration-2':''}`} onClick={showDetail}>
             <div className="w-fit h-fit relative">
-              <div className="ping -right-2 -top-1">
-                <div className="ping animate-ping" />
-              </div>
-              {date.format('D')}
+              { true && itemDetail.info.ary.map(info=>info.state > 0).filter(element=>element===true).length > 0 &&
+                <div className="ping -right-2 -top-1">
+                  <div className="ping animate-ping" />
+                </div>
+              }
+              {itemDetail.date.format('D')}
             </div>
           </button>
         </div>
