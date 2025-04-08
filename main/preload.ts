@@ -13,7 +13,10 @@ const handler = {
       ipcRenderer.removeListener(channel, subscription)
     }
   },
-  openExternal: (url:string) => ipcRenderer.invoke("open-external", url)
+  openExternal: (url:string) => ipcRenderer.invoke("open-external", url),
+  heartToggle: (date:string) => ipcRenderer.invoke("heart-toggle", date),
+  loadFile: (filename:string) => ipcRenderer.invoke("load-file", filename),
+  saveFile: (filename:string, data:object) => ipcRenderer.invoke("save-file", filename, data),
 }
 
 contextBridge.exposeInMainWorld('ipc', handler)

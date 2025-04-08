@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { CalendarItemInfo } from "./calendar";
+import { CalendarItemInfo } from "./interface";
 
 const info_margin = 10; // px
 const state = ['', 'val-update', 'val-plus', 'val-minus']

@@ -5,7 +5,7 @@ import { FaEquals, FaArrowLeft } from "react-icons/fa";
 import { LuBookPlus } from "react-icons/lu";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { useEffect, useState } from "react";
-import { CalendarRule, CalendarRulesInfo } from "./calendar";
+import { CalendarRule, CalendarRulesInfo } from "./interface";
 
 const Rule = ({
   ruleData,
@@ -84,7 +84,7 @@ export const CanlendarItemDetail = ({ruleDetail}:{ruleDetail:CalendarRulesInfo})
   const [ openRule, setOpenRule ] = useState<boolean>(false)
 
   const addRule = () => {
-    
+
   }
 
   return (

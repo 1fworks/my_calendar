@@ -4,38 +4,8 @@ import { Item } from './calendarItem'
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { CurrTime } from "./currTime";
 import { ThemeSwitch } from "../themeSwitch";
-import { NoteBook } from "../notebook";
-import { Dayjs } from "dayjs";
-
-export interface CalendarRule {
-	rule: string,
-	value: number[],
-	operation: number,
-}
-
-export interface CalendarRulesInfo {
-	alias: string,
-	value: number,
-	state: number, // normal update plus minus
-	final_operation: {
-		value: number,
-		operation: number,
-	},
-	rules: CalendarRule[],
-}
-
-export interface CalendarItemInfo {
-	memo: string,
-	favorite: boolean,
-	ary: CalendarRulesInfo[],
-}
-
-export interface CalendarItemDataset {
-	val: number,
-	isCurrMonth: boolean,
-	date: Dayjs,
-	info: CalendarItemInfo
-}
+import { NoteBook } from "./notebook";
+import { CalendarItemDataset } from './interface';
 
 export const Canlendar = () => {
 	const [ time, setTime ] = useState(my_dayjs('1111-1-1'))
@@ -44,8 +14,6 @@ export const Canlendar = () => {
 	const [ detailTrigger, setDetailTrigger ] = useState<string>('')
 
 	const setCanlendarData = async() => {
-		console.log('update!')
-		
 		const start = time.startOf('month').day() // 0 (Sunday) to 6 (Saturday)
 		const last = time.endOf('month').date() // 1 ~ 31
 

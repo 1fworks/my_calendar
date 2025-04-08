@@ -3,7 +3,7 @@ import { FaHeart, FaHeartBroken } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { CalendarItemDataset } from "./calendar/calendar";
+import { CalendarItemDataset } from "./interface";
 
 export const NoteBook = ({
   items,
@@ -27,7 +27,8 @@ export const NoteBook = ({
     }))
   }, [items])
 
-  const heartToggle = () => {
+  const heartToggle = (date:string) => {
+    window.ipc.heartToggle(date)
     update()
   }
 
@@ -69,7 +70,7 @@ export const NoteBook = ({
                         key={`memo - ${i}`}
                       >
                         <div className="w-fit h-fit">
-                          <button className="theme-switch" onClick={heartToggle}>
+                          <button className="theme-switch" onClick={()=>{heartToggle(item.date.format('YYYY-MM-DD'))}}>
                             {item.info.favorite?<FaHeart />:<FaHeartBroken />}
                           </button>
                         </div>

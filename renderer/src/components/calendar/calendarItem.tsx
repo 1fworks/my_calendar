@@ -5,7 +5,7 @@ import { FaSave } from "react-icons/fa";
 import { DividingLine } from "./dividingLine";
 import { CanlendarItemDetail } from "./calendarItemDetail";
 import { ItemInfo } from "./ItemInfo";
-import { CalendarItemDataset } from "./calendar";
+import { CalendarItemDataset } from "./interface";
 
 export const Item = ({
 	itemDetail,
@@ -32,7 +32,7 @@ export const Item = ({
   }
 
   const addVariable = () => {
-    
+
   }
 
   const save = () => {

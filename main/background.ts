@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs'
 import { app, ipcMain, shell } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
@@ -43,4 +44,17 @@ ipcMain.on('message', async (event, arg) => {
 
 ipcMain.handle("open-external", async(_, url:string)=>{
   await shell.openExternal(url)
+})
+
+ipcMain.handle("heart-toggle", async(_, date:string)=>{
+  console.log(date)
+})
+
+ipcMain.handle("load-file", async(_, filename:string)=>{
+  console.log(filename)
+})
+
+ipcMain.handle("save-file", async(_, filename:string, data:object)=>{
+  if(!fs.existsSync('savfiles/')) fs.mkdirSync('savfiles', { recursive: true })
+  console.log(filename, JSON.stringify(data))
 })
