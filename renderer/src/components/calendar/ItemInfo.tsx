@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { CalendarItemInfo } from "./calendar";
 
 const info_margin = 10; // px
@@ -10,7 +10,7 @@ export const ItemInfo = ({
   id
 }:{
   info: CalendarItemInfo
-  id:string
+  id: string
 }) => {
   const [ pos, setPos ] = useState({
     left: 0,
@@ -43,8 +43,7 @@ export const ItemInfo = ({
       else y = info_margin
     }
     // else if(y+h > H-info_margin) y = H-info_margin-h
-
-    if(pos.left !== x - p_x && pos.top !== y - p_y) {
+    if(pos.left !== x - p_x || pos.top !== y - p_y) {
       setPos({
         left: x - p_x, top: y - p_y, origin: origin
       })

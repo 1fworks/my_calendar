@@ -1,5 +1,4 @@
-import { Dayjs } from "dayjs"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { MdCancel } from "react-icons/md";
 import { BiPlusCircle } from "react-icons/bi";
 import { FaSave } from "react-icons/fa";
@@ -9,9 +8,16 @@ import { ItemInfo } from "./ItemInfo";
 import { CalendarItemDataset } from "./calendar";
 
 export const Item = ({
-	itemDetail
+	itemDetail,
+  detailTrigger,
+  update,
 }:{
-	itemDetail:CalendarItemDataset
+	itemDetail:CalendarItemDataset,
+  detailTrigger: {
+    val: string,
+    reset: Function,
+  },
+  update: ()=>Promise<void>
 }) => {
   const [ active, setActive ] = useState(false)
 
@@ -25,6 +31,21 @@ export const Item = ({
     }
   }
 
+  const addVariable = () => {
+    
+  }
+
+  const save = () => {
+    update()
+  }
+
+  useEffect(()=>{
+    if(detailTrigger.val.length > 0 && itemDetail.date.format('YYYY-MM-DD') === detailTrigger.val) {
+      showDetail()
+      detailTrigger.reset()
+    }
+  }, [detailTrigger.val])
+
 	return (
     <>
       <div
@@ -35,7 +56,7 @@ export const Item = ({
         <div className="overlay-box">
           <div className="w-full h-full relative p-2 cursor-default flex flex-col" onClick={e=>e.stopPropagation()}>
             <div className="w-full h-fit flex justify-between mb-3">
-              <button className="theme-switch">
+              <button className="theme-switch" onClick={save}>
                 <FaSave />
               </button>
               <div className="w-full flex flex-row justify-center items-center">
@@ -64,7 +85,7 @@ export const Item = ({
                     )
                   })
                 }
-                <button className="w-full mini-svg flex flex-row items-center justify-center">
+                <button className="w-full mini-svg flex flex-row items-center justify-center" onClick={addVariable}>
                   <span>- - - </span>
                   <BiPlusCircle />
                   <span>add new variable - - -</span>

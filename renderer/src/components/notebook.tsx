@@ -2,10 +2,18 @@ import { FaRegNoteSticky } from "react-icons/fa6";
 import { FaHeart, FaHeartBroken } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { CalendarItemDataset } from "./calendar/calendar";
 
-export const NoteBook = ({items}:{items:CalendarItemDataset[]}) => {
+export const NoteBook = ({
+  items,
+  setDetailTrigger,
+  update,
+}:{
+  items:CalendarItemDataset[],
+  setDetailTrigger:Dispatch<SetStateAction<string>>,
+  update: () => Promise<void>
+}) => {
   const [ active, setActive ] = useState<boolean>(false)
   const [ memos, setMemos ] = useState(items)
 
@@ -18,6 +26,15 @@ export const NoteBook = ({items}:{items:CalendarItemDataset[]}) => {
       else return 1
     }))
   }, [items])
+
+  const heartToggle = () => {
+    update()
+  }
+
+  const openDetailPage = (data: CalendarItemDataset) => {
+    setDetailTrigger(data.date.format('YYYY-MM-DD'))
+    setActive(false)
+  }
 
 	return (
     <>
@@ -52,7 +69,7 @@ export const NoteBook = ({items}:{items:CalendarItemDataset[]}) => {
                         key={`memo - ${i}`}
                       >
                         <div className="w-fit h-fit">
-                          <button className="theme-switch">
+                          <button className="theme-switch" onClick={heartToggle}>
                             {item.info.favorite?<FaHeart />:<FaHeartBroken />}
                           </button>
                         </div>
@@ -65,7 +82,7 @@ export const NoteBook = ({items}:{items:CalendarItemDataset[]}) => {
                           </div>
                         </div>
                         <div className="w-fit h-fit">
-                          <button className="theme-switch"><FiEdit /></button>
+                          <button className="theme-switch" onClick={()=>{openDetailPage(item)}}><FiEdit /></button>
                         </div>
                       </div>
                     )}).filter(element=>element!==undefined)

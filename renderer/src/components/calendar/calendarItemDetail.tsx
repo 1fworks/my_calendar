@@ -83,6 +83,10 @@ export const CanlendarItemDetail = ({ruleDetail}:{ruleDetail:CalendarRulesInfo})
   const [ inputVal, setInputVal ] = useState<string>(ruleDetail.alias)
   const [ openRule, setOpenRule ] = useState<boolean>(false)
 
+  const addRule = () => {
+    
+  }
+
   return (
     <div className="item-detail flex flex-col gap-1">
       <div className="div-border rule-box-main rule-box flex flex-row items-center">
@@ -122,7 +126,7 @@ export const CanlendarItemDetail = ({ruleDetail}:{ruleDetail:CalendarRulesInfo})
               )
             })
           }
-          <button className="w-full div-border-l-8 mini-svg flex flex-row items-center justify-center">
+          <button className="w-full div-border-l-8 mini-svg flex flex-row items-center justify-center" onClick={addRule}>
             <LuBookPlus />
             <span>add rule</span>
           </button>
