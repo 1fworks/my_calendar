@@ -81,8 +81,8 @@ export const Canlendar = () => {
 						isCurrMonth: isCurrMonth,
 						date: date,
 						info: {
-							memo: 'test memo',
-							favorite: true,
+							memo: i%3==0?'test memo':'',
+							favorite: i%2==0?true:false,
 							ary: [
 								{ alias: 'alias 1', value: 100, state: 0, final_operation: { value: 0, operation: 0 }, rules: [] },
 								{ alias: 'alias 2', value: 100, state: 1, final_operation: { value: 10, operation: 1 }, rules: [] },

@@ -7,6 +7,17 @@ import { CalendarItemDataset } from "./calendar/calendar";
 
 export const NoteBook = ({items}:{items:CalendarItemDataset[]}) => {
   const [ active, setActive ] = useState<boolean>(false)
+  const [ memos, setMemos ] = useState(items)
+
+  useEffect(()=>{
+    setMemos(items.map(item=>{
+      return item
+    }).sort((a, b)=>{
+      if(a.info.favorite && b.info.favorite) return 0
+      else if(a.info.favorite) return -1
+      else return 1
+    }))
+  }, [items])
 
 	return (
     <>
@@ -33,7 +44,7 @@ export const NoteBook = ({items}:{items:CalendarItemDataset[]}) => {
               </div>
               <div className="relative flex-1 overflow-y-scroll mr-2 pb-3">
                 <div className="flex flex-col gap-2">
-                  { items.map((item, i)=>{
+                  { memos.map((item, i)=>{
                     if(item.info.memo.length > 0)
                     return (
                       <div

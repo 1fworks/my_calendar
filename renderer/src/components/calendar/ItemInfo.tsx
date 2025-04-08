@@ -3,29 +3,31 @@ import { CalendarItemInfo } from "./calendar";
 
 const info_margin = 10; // px
 const state = ['', 'val-update', 'val-plus', 'val-minus']
-const state_msg = ['', '(update)', '(+)', '(-)']
+const state_msg = ['', '(Update)', '(↑)', '(↓)']
 
 export const ItemInfo = ({
-  info
+  info,
+  id
 }:{
   info: CalendarItemInfo
+  id:string
 }) => {
-  const divRef = useRef<HTMLDivElement>(null)
   const [ pos, setPos ] = useState({
     left: 0,
     top: 0,
     origin: 'bottom'
   })
 
-  const pos_init = useCallback(() => {
+  const pos_init = () => {
+    const target:HTMLDivElement = document.querySelector(`#${id}`)
     const W = window.innerWidth
     // const H = window.innerHeight
-    const P_W = divRef.current.parentElement.clientWidth;
-    const P_H = divRef.current.parentElement.clientHeight;
-    const p_x = divRef.current.parentElement.offsetLeft;
-    const p_y = divRef.current.parentElement.offsetTop;
-    const w = divRef.current.clientWidth
-    const h = divRef.current.clientHeight
+    const P_W = target.parentElement.clientWidth;
+    const P_H = target.parentElement.clientHeight;
+    const p_x = target.parentElement.offsetLeft;
+    const p_y = target.parentElement.offsetTop;
+    const w = target.clientWidth
+    const h = target.clientHeight
     
     let x = p_x + (P_W - w)/2
     let y = p_y - h - 8
@@ -47,22 +49,20 @@ export const ItemInfo = ({
         left: x - p_x, top: y - p_y, origin: origin
       })
     }
-  }, [divRef])
+  }
 
   useEffect(()=>{
-    if(divRef.current) {
-      pos_init()
-      window.addEventListener("resize", pos_init)
-      return () => {
-        window.removeEventListener("resize", pos_init)
-      }
+    pos_init()
+    window.addEventListener("resize", pos_init)
+    return () => {
+      window.removeEventListener("resize", pos_init)
     }
-  }, [])
+  }, [id, info])
 
   return (
     <div
-      ref={divRef}
       className="item-info"
+      id={id}
       style={{
         left: `${pos.left}px`,
         top: `${pos.top}px`,

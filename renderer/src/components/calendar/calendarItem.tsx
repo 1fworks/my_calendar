@@ -79,7 +79,7 @@ export const Item = ({
       <div className="calendar-item-cover w-full h-full">
         <div className="item-overlay-shadow" />
         <div className={`calendar-item ${itemDetail.isCurrMonth?'font-bold':'opacity-50'}`}>
-          <ItemInfo info={itemDetail.info}/>
+          <ItemInfo info={itemDetail.info} id={`slot-${itemDetail.date.format('YYYY-MM-DD')}`}/>
           <button className={`calendar-circle ${itemDetail.info.memo.length > 0?'underline underline-offset-4 decoration-2':''}`} onClick={showDetail}>
             <div className="w-fit h-fit relative">
               { true && itemDetail.info.ary.map(info=>info.state > 0).filter(element=>element===true).length > 0 &&
