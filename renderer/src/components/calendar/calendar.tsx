@@ -6,6 +6,8 @@ import { CurrTime } from "./currTime";
 import { ThemeSwitch } from "../themeSwitch";
 import { NoteBook } from "./notebook";
 import { CalendarItemDataset } from './interface';
+import lodash from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 
 export const Canlendar = () => {
 	const [ time, setTime ] = useState(my_dayjs('1111-1-1'))
@@ -13,7 +15,7 @@ export const Canlendar = () => {
 	const [ items, setItems ] = useState<CalendarItemDataset[]>([])
 	const [ detailTrigger, setDetailTrigger ] = useState<string>('')
 
-	const setCanlendarData = async() => {
+	const resetCalendarData = async() => {
 		const start = time.startOf('month').day() // 0 (Sunday) to 6 (Saturday)
 		const last = time.endOf('month').date() // 1 ~ 31
 
@@ -27,7 +29,7 @@ export const Canlendar = () => {
 			item_data_ary.push(-(i+1))
 		}
 
-		const result = []
+		const result: CalendarItemDataset[] = []
 		item_data_ary.forEach((val, i)=>{
 			let isCurrMonth = true
 			let date = time
@@ -49,16 +51,16 @@ export const Canlendar = () => {
 					memo: i%3==0?'test memo':'',
 					favorite: i%2==0?true:false,
 					ary: [
-						{ alias: 'alias 1', value: 100, state: 0, final_operation: { value: 0, operation: 0 }, rules: [] },
-						{ alias: 'alias 2', value: 100, state: 1, final_operation: { value: 10, operation: 1 }, rules: [] },
-						{ alias: 'alias 3', value: 100, state: 2, final_operation: { value: 20, operation: 2 }, rules: [] },
-						{ alias: 'alias 4', value: 100, state: 3, final_operation: { value: 30, operation: 3 }, rules: [
-								{ rule: 'rule-1', value: [1, 1, 1, 1, 1, 1, 1], operation: 0 },
-								{ rule: 'rule-2', value: [1, 1, 1, 1, 1, 1, 1], operation: 1 },
-								{ rule: 'rule-3', value: [1, 1, 1, 1, 1, 1, 1], operation: 2 },
-								{ rule: 'rule-4', value: [1, 1, 1, 1, 1, 1, 1], operation: 0 },
-								{ rule: 'rule-5', value: [1, 1, 1, 1, 1, 1, 1], operation: 1 },
-								{ rule: 'rule-6', value: [1, 1, 1, 1, 1, 1, 1], operation: 2 },
+						{ uuid: uuidv4(), alias: 'alias 1', value: 100, state: 0, final_operation: { value: 0, operation: 0 }, rules: [] },
+						{ uuid: uuidv4(), alias: 'alias 2', value: 100, state: 1, final_operation: { value: 10, operation: 1 }, rules: [] },
+						{ uuid: uuidv4(), alias: 'alias 3', value: 100, state: 2, final_operation: { value: 20, operation: 2 }, rules: [] },
+						{ uuid: uuidv4(), alias: 'alias 4', value: 100, state: 3, final_operation: { value: 30, operation: 3 }, rules: [
+								{ uuid: uuidv4(), ruleType: 'rule-1', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 1 },
+								{ uuid: uuidv4(), ruleType: 'rule-2', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 1 },
+								{ uuid: uuidv4(), ruleType: 'rule-3', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 2 },
+								{ uuid: uuidv4(), ruleType: 'rule-4', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 3 },
+								{ uuid: uuidv4(), ruleType: 'rule-5', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 1 },
+								{ uuid: uuidv4(), ruleType: 'rule-6', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 2 },
 							]
 						},
 					],
@@ -75,7 +77,7 @@ export const Canlendar = () => {
 			setDate(now.format('YYYY-MM'))
 		}
 		else {
-			setCanlendarData()
+			resetCalendarData()
 		}
 	}, [time]);
 
@@ -91,6 +93,14 @@ export const Canlendar = () => {
 		setDate(t.format('YYYY-MM'))
   }
 
+	const setItem = (i:number, item: CalendarItemDataset) => {
+		const newItems:CalendarItemDataset[] = lodash.cloneDeep(items)
+		if(newItems.length > i) {
+			newItems[i] = item
+			setItems(newItems)
+		}
+	}
+
 	const header = [1, 2, 3, 4, 5, 6, 7].map(val=>{
 		return my_dayjs(`2024-12-${val}`).format('ddd')
 	})
@@ -99,7 +109,7 @@ export const Canlendar = () => {
 		<>
 			<div className="calendar">
 				<div className="p-2 absolute top-0 left-0 flex flex-row gap-2">
-					<NoteBook items={items} setDetailTrigger={setDetailTrigger} update={setCanlendarData} />
+					<NoteBook items={items} setDetailTrigger={setDetailTrigger} resetCalendarData={resetCalendarData} />
 					<ThemeSwitch />
 				</div>
 				<CurrTime />
@@ -146,7 +156,17 @@ export const Canlendar = () => {
 							{ items.map((item, i)=>{
 									return (
 										<div key={`item-${i}`} className="w-full h-full grid items-center">
-											<Item itemDetail={item} update={setCanlendarData} detailTrigger={{val: detailTrigger, reset: ()=>{setDetailTrigger('')}}}/>
+											<Item
+												itemDetail={item}
+												resetCalendar={resetCalendarData}
+												// setItem={(item:CalendarItemDataset)=>{setItem(i, item)}}
+												detailTrigger={
+													{
+														val: detailTrigger,
+														reset: ()=>{ setDetailTrigger('') }
+													}
+												}
+											/>
 										</div>
 									)
 								})

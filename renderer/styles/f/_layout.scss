@@ -28,6 +28,10 @@
         @apply my-2;
     }
 
+    .item-hr {
+        @apply mt-1 mb-0;
+    }
+
     .date-text {
         @apply text-lg font-bold;
     }
@@ -52,6 +56,10 @@
 
     input {
         @apply px-2 mx-1 w-full;
+    }
+
+    .input-mx0 {
+        @apply mx-0;
     }
 
     .rule-box {
@@ -200,7 +208,7 @@
         @apply text-purple-500;
     }
     .ping {
-        @apply absolute rounded-full bg-rose-400 opacity-50;
+        @apply absolute rounded-full bg-gray-400 opacity-50;
         @apply size-2;
     }
 }

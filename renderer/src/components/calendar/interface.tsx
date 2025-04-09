@@ -1,18 +1,21 @@
 import { Dayjs } from "dayjs"
 
 export interface CalendarRule {
-  rule: string,
-  value: number[],
-  operation: number,
+  uuid: string,
+  ruleType: string,
+  ruleVal: number[],
+  value: number,
+  operation: number, // x, reset, plus, minus
 }
 
 export interface CalendarRulesInfo {
+  uuid: string,
   alias: string,
   value: number,
   state: number, // normal update plus minus
   final_operation: {
     value: number,
-    operation: number,
+    operation: number, // nothing, reset, plus, minus
   },
   rules: CalendarRule[],
 }

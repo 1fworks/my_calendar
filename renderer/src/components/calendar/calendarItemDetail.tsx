@@ -1,17 +1,78 @@
 import { TiPlus, TiMinus } from "react-icons/ti";
 import { RiDeleteBin2Fill } from "react-icons/ri";
 import { PiStarFourFill, PiArrowBendDownRightBold } from "react-icons/pi";
-import { FaEquals, FaArrowLeft } from "react-icons/fa";
+import { FaEquals } from "react-icons/fa";
 import { LuBookPlus } from "react-icons/lu";
+import { SiEducative } from "react-icons/si";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { CalendarRule, CalendarRulesInfo } from "./interface";
+import lodash from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 
 const Rule = ({
   ruleData,
+  updateRule,
+  deleteRule,
 }:{
   ruleData: CalendarRule,
+  updateRule: (CalendarRule:CalendarRule)=>void,
+  deleteRule: ()=>void,
 }) => {
+  const [ ruleType, setRuleType ] = useState<string>(ruleData.ruleType)
+  const [ ruleVal, setRuleVal ] = useState<string[]>(ruleData.ruleVal.map(val=>{return val.toString()}))
+  const [ value, setValue ] = useState<string>(ruleData.value.toString())
+  const [ oper, setOper ] = useState<number>(ruleData.operation)
+
+  const str_to_int = (str:string) => {
+    let result = parseInt(str)
+    if(isNaN(result)) result = 0
+    return result
+  }
+
+  const change_ruleVal = (e:ChangeEvent<HTMLInputElement>, num: number) => {
+    const val = e.target.value?e.target.value:''
+    const result = lodash.cloneDeep(ruleVal)
+    result[num] = val
+    setRuleVal(result)
+  }
+
+  const change_ruleVal_checkbox = (e:ChangeEvent<HTMLInputElement>, num: number) => {
+    const val = e.target.checked?'1':'0'
+    const result = lodash.cloneDeep(ruleVal)
+    result[num] = val
+    setRuleVal(result)
+  }
+
+  useEffect(()=>{
+    const val = str_to_int(value)
+    const rule_val = ruleVal.map(element=>{return str_to_int(element)})
+    if(ruleType === 'rule-1') {
+      rule_val[0] = Math.min(Math.max(rule_val[0], 1), 12)
+      rule_val[1] = Math.min(Math.max(rule_val[1], 1), 31)
+    }
+    else if(ruleType === 'rule-2') {
+      rule_val[0] = Math.min(Math.max(rule_val[0], 1), 31)
+    }
+    else if(ruleType === 'rule-6') {
+      rule_val[0] = Math.max(rule_val[0], 1)
+    }
+    if(
+      !lodash.isEqual(ruleType, ruleData.ruleType) ||
+      !lodash.isEqual(rule_val, ruleData.ruleVal) ||
+      !lodash.isEqual(val, ruleData.value) ||
+      !lodash.isEqual(oper, ruleData.operation)
+    ){
+      updateRule({
+        uuid: ruleData.uuid,
+        ruleType: ruleType,
+        ruleVal: rule_val,
+        value: val,
+        operation: oper
+      })
+    }
+  }, [ruleType, ruleVal, value, oper])
+
   return (
     <div className="div-border div-border-l-8 rule-box flex flex-col items-center">
       <div className="w-full flex flex-row items-center">
@@ -19,7 +80,14 @@ const Rule = ({
           <PiArrowBendDownRightBold />
         </div>
         <div className="ml-2 w-full h-fit">
-          <select className="div-border" value={ruleData.rule} name="rule" onChange={(e)=>{console.log(e.target.value)}}>
+          <select className="div-border" value={ruleType} name="rule" onChange={(e)=>{
+              setRuleType(e.target.value)
+              if(e.target.value !== 'rule-4')
+                setRuleVal(['1', '1', '1', '1', '1', '1', '1'])
+              else
+                setRuleVal(['0', '0', '0', '0', '0', '0', '0'])
+            }}
+          >
             <option value='rule-1'>매년 n월 n일</option>
             <option value='rule-2'>매달 n일</option>
             <option value='rule-3'>매달 마지막 날</option>
@@ -28,25 +96,34 @@ const Rule = ({
             <option value='rule-6'>n일 간격으로</option>
           </select>
         </div>
-        <button className="mini-svg ml-auto"><RiDeleteBin2Fill/></button>
+        <button className="mini-svg ml-auto" onClick={()=>{deleteRule()}}><RiDeleteBin2Fill/></button>
       </div>
-      { ruleData.rule === 'rule-1' && /* 매년 n월 n일 */
+      { ruleType === 'rule-1' && /* 매년 n월 n일 */
         <div className="flex flex-row items-center justify-center">
           <span>매년</span>
-          <input type="number" min="1" max="12" className="h-fit div-border max-w-16"></input>
+          <input type="number" min="1" max="12" className="h-fit div-border max-w-16"
+            value={ ruleVal[0] }
+            onChange={e=>{change_ruleVal(e, 0)}}
+          />
           <span>월</span>
-          <input type="number" min="1" max="31" className="h-fit div-border max-w-16"></input>
+          <input type="number" min="1" max="31" className="h-fit div-border max-w-16"
+            value={ ruleVal[1] }
+            onChange={e=>{change_ruleVal(e, 1)}}
+          />
           <span>일 마다</span>
         </div>
       }
-      { ruleData.rule === 'rule-2' && /* 매달 n일 */
+      { ruleType === 'rule-2' && /* 매달 n일 */
         <div className="flex flex-row items-center justify-center">
           <span>매달</span>
-          <input type="number" min="1" max="31" className="h-fit div-border max-w-16"></input>
+          <input type="number" min="1" max="31" className="h-fit div-border max-w-16"
+            value={ ruleVal[0] }
+            onChange={e=>{change_ruleVal(e, 0)}}
+          />
           <span>일 마다</span>
         </div>
       }
-      { ruleData.rule === 'rule-4' && /* 매주 *요일 */
+      { ruleType === 'rule-4' && /* 매주 *요일 */
         <div className="flex flex-row gap-[0.1rem] items-center justify-center mb-2">
           <span className="mr-1">매주</span>
           {
@@ -54,7 +131,10 @@ const Rule = ({
               return (
                 <div className="flex flex-col items-center justify-center" key={`key ${val}`}>
                   <label>{val}</label>
-                  <input className="size-4" type="checkbox" name={`n-${i}`} value={`n-${i}`} />
+                  <input className="size-4" type="checkbox" name={`n-${i}`} value={`n-${i}`}
+                    checked={ parseInt(ruleVal[i])>0 }
+                    onChange={e=>{change_ruleVal_checkbox(e, i)}}
+                  />
                 </div>
               )
             })
@@ -62,76 +142,178 @@ const Rule = ({
           <span className="ml-1">마다</span>
         </div>
       }
-      { ruleData.rule === 'rule-6' && /* n일 간격으로 */
+      { ruleType === 'rule-6' && /* n일 간격으로 */
         <div className="flex flex-row items-center justify-center">
-          <input type="number" min="1" className="h-fit div-border max-w-20"></input>
+          <input type="number" min="1" className="h-fit div-border max-w-20"
+            value={ ruleVal[0] }
+            onChange={e=>{change_ruleVal(e, 0)}}
+          />
           <span>일 간격으로</span>
         </div>
       }
-      <div className="flex flex-row items-center mb-1">
-        <button className="mini-svg ml-auto flex flex-row">
-          <FaArrowLeft/>{/* <TiMinus/><TiPlus/> */}
-          <FaEquals/>
+      <div className="flex flex-row items-center mb-1 mt-1">
+        <button className="mini-svg ml-auto flex flex-row items-center pr-2" onClick={()=>{
+          let tmp = (oper + 1)%4
+          if(tmp === 0) tmp = 1
+          setOper(tmp)
+        }}>
+          {oper<2?
+            <><FaEquals/><span>값 초기화</span></>
+          :(oper===2?
+            <><TiPlus/><span>증가</span></>
+          :
+            <><TiMinus/><span>감소</span></>
+          )}
         </button>
-        <input type="number" className="h-fit div-border"></input>
+        <input type="number" className="h-fit div-border"
+          value={value} onChange={(e)=>{setValue(e.target.value?e.target.value:'')}}
+        />
       </div>
     </div>
   )
 }
 
-export const CanlendarItemDetail = ({ruleDetail}:{ruleDetail:CalendarRulesInfo}) => {
-  const [ inputVal, setInputVal ] = useState<string>(ruleDetail.alias)
+export const CanlendarItemDetail = ({
+  ruleDetail,
+  delVariable,
+  setRulesInfo,
+}:{
+  ruleDetail: CalendarRulesInfo
+  delVariable: Function,
+  setRulesInfo: (rulesInfo:CalendarRulesInfo) => void
+}) => {
   const [ openRule, setOpenRule ] = useState<boolean>(false)
+  const [ alias, setAlias ] = useState<string>(ruleDetail.alias)
+  const [ f_value, setF_value ] = useState<string>(ruleDetail.final_operation.value.toString())
+  const [ oper, setOper ] = useState<number>(ruleDetail.final_operation.operation)
+  const [ rules, setRules ] = useState<CalendarRule[]>(lodash.cloneDeep(ruleDetail.rules))
+
+  useEffect(()=>{
+    let value = parseInt(f_value)
+    if(isNaN(value)) value = 0
+
+    if(
+      !lodash.isEqual(alias, ruleDetail.alias) ||
+      !lodash.isEqual(value, ruleDetail.final_operation.value) ||
+      !lodash.isEqual(oper, ruleDetail.final_operation.operation) ||
+      !lodash.isEqual(rules, ruleDetail.rules)
+    ) {
+      const result = lodash.cloneDeep({
+        uuid: ruleDetail.uuid,
+        alias: alias,
+        value: value,
+        state: ruleDetail.state,
+        final_operation: {
+          value: ruleDetail.final_operation.value,
+          operation: oper,
+        },
+        rules: rules
+      })
+      setRulesInfo(result)
+    }
+  }, [f_value, oper, rules])
+
+  const updateRule = (rule: CalendarRule, i: number) => {
+    const newRules:CalendarRule[] = lodash.cloneDeep(rules)
+    newRules[i] = lodash.cloneDeep(rule)
+    setRules(newRules)
+  }
 
   const addRule = () => {
+    if(!openRule) setOpenRule(true)
+    const newRules:CalendarRule[] = lodash.cloneDeep(rules)
+    newRules.push({
+      uuid: uuidv4(),
+      ruleType: 'rule-1',
+      ruleVal: [1, 1, 1, 1, 1, 1, 1],
+      value: 0,
+      operation: 1,
+    })
+    setRules(newRules)
+  }
 
+  const delVar = () => {
+    delVariable()
+  }
+
+  const delRule = (i:number) => {
+    const newRules:CalendarRule[] = lodash.cloneDeep(rules)
+    if(newRules.length > i) {
+      newRules.splice(i, 1)
+      setRules(newRules)
+    }
   }
 
   return (
     <div className="item-detail flex flex-col gap-1">
-      <div className="div-border rule-box-main rule-box flex flex-row items-center">
+      <div className="div-border rule-box-main rule-box flex flex-col gap-1">
 
-        <div className="w-fit flex flex-row items-center">
-          <div className="mini-svg">
+        <div className="w-full flex flex-row items-center p-1 pb-0">
+          <div className="theme-switch">
             <PiStarFourFill/>
           </div>
-          <input className="ml-1 mr-2 font-bold text-nowrap max-w-20 div-border" value={inputVal} onChange={e=>setInputVal(e.target.value)} />
-          <button className="mini-svg ml-auto flex flex-row">
-            <FaArrowLeft/>{/* <TiMinus/><TiPlus/> */}
-            <FaEquals/>
-          </button>
-          <input type="number" className="div-border"></input>
+          <input className="ml-1 mr-2 p-1 text-lg font-bold text-nowrap max-w-36 div-border" value={alias} onChange={e=>setAlias(e.target.value)} />
+          <div className="w-full flex items-end">
+            <button className="theme-switch ml-auto" onClick={delVar}><RiDeleteBin2Fill/></button>
+          </div>
         </div>
-        <button className="theme-switch ml-auto"><RiDeleteBin2Fill/></button>
-
-      </div>
-
-      <button
-        className="w-full div-border-l-8 mini-svg flex flex-row items-center z-10"
-        onClick={()=>{
-          setOpenRule(!openRule)
-        }}
-      >
-        { openRule?<MdKeyboardArrowUp />:<MdKeyboardArrowDown /> }
-        <span>{openRule?'close':'open'} rules</span>
-      </button>
-      { openRule &&
-        <div className="flex flex-col gap-1 animate-climb100-animation">
-          {
-            ruleDetail.rules.map((element, i)=>{
-              return (
-                <div key={`rule ${i}`}>
-                  <Rule ruleData={element}/>
-                </div>
-              )
-            })
+        
+        <div className="flex flex-row justify-center p-1">
+          <button className="mini-svg mr-1 flex flex-row items-center" onClick={()=>{
+            setOper((oper+1) % 4)
+          }}>
+            {/* <FaEquals/>
+             <FaArrowLeft />*/}
+            { oper === 0 && <><SiEducative/><span className="mr-2">규칙 계산만 처리</span></> }
+            { oper === 1 && <><FaEquals/><span className="mr-2">값 초기화</span></> }
+            { oper === 2 && <><TiPlus/><span className="mr-2">증가</span></> }
+            { oper === 3 && <><TiMinus/><span className="mr-2">감소</span></> }
+          </button>
+          { oper > 0 &&
+            <input type="number" className="div-border max-w-52 input-mx0"
+              value={f_value} onChange={e=>{setF_value(e.target.value?e.target.value:'')}}
+            />
           }
-          <button className="w-full div-border-l-8 mini-svg flex flex-row items-center justify-center" onClick={addRule}>
-            <LuBookPlus />
-            <span>add rule</span>
-          </button>
         </div>
-      }
+
+        <hr className="item-hr mx-1"/>
+
+        <div className="flex flex-col gap-2 pt-1 p-1">
+          <button
+            className="w-fit pr-5 div-border-l-8 mini-svg flex flex-row items-center z-10"
+            onClick={()=>{
+              setOpenRule(!openRule)
+            }}
+          >
+            { openRule?<MdKeyboardArrowUp />:<MdKeyboardArrowDown /> }
+            <span>{openRule?'close':'open'} rules</span>
+          </button>
+          { openRule &&
+            <div className="flex flex-col gap-2 animate-climb100-animation">
+              {
+                rules.map((element, i)=>{
+                  return (
+                    <div key={`rule ${element.uuid}`}>
+                      <Rule
+                        updateRule={(rule:CalendarRule)=>{updateRule(rule, i)}}
+                        deleteRule={()=>{delRule(i)}}
+                        ruleData={element}
+                      />
+                    </div>
+                  )
+                })
+              }
+              {
+                rules.length === 0 && <span className="pl-1 opacity-50">아직 아무 규칙도 없어요..</span>
+              }
+              <button className="w-full div-border-l-8 mini-svg flex flex-row items-center justify-center" onClick={addRule}>
+                <LuBookPlus />
+                <span>규칙 추가</span>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
     </div>
   )
 }

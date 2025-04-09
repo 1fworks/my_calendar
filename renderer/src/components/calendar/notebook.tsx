@@ -8,11 +8,11 @@ import { CalendarItemDataset } from "./interface";
 export const NoteBook = ({
   items,
   setDetailTrigger,
-  update,
+  resetCalendarData,
 }:{
   items:CalendarItemDataset[],
   setDetailTrigger:Dispatch<SetStateAction<string>>,
-  update: () => Promise<void>
+  resetCalendarData: () => Promise<void>
 }) => {
   const [ active, setActive ] = useState<boolean>(false)
   const [ memos, setMemos ] = useState(items)
@@ -29,7 +29,7 @@ export const NoteBook = ({
 
   const heartToggle = (date:string) => {
     window.ipc.heartToggle(date)
-    update()
+    resetCalendarData()
   }
 
   const openDetailPage = (data: CalendarItemDataset) => {
