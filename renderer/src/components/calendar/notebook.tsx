@@ -27,8 +27,8 @@ export const NoteBook = ({
     }))
   }, [items])
 
-  const heartToggle = (date:string) => {
-    window.ipc.heartToggle(date)
+  const heartToggle = async(date:string) => {
+    await window.ipc.heartToggle(date)
     resetCalendarData()
   }
 

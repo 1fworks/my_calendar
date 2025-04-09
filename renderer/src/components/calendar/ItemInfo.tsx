@@ -83,8 +83,10 @@ export const ItemInfo = ({
         }
         { info.memo &&
           <>
-            <hr />
-            <div className="font-normal">메모: {info.memo}</div>
+            { info.ary.length > 0 &&
+              <hr />
+            }
+            <div className="font-normal memo-content w-44 max-w-fit">메모: {info.memo}</div>
           </>
         }
       </div>

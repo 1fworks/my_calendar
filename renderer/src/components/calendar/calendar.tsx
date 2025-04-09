@@ -51,18 +51,18 @@ export const Canlendar = () => {
 					memo: i%3==0?'test memo':'',
 					favorite: i%2==0?true:false,
 					ary: [
-						{ uuid: uuidv4(), alias: 'alias 1', value: 100, state: 0, final_operation: { value: 0, operation: 0 }, rules: [] },
-						{ uuid: uuidv4(), alias: 'alias 2', value: 100, state: 1, final_operation: { value: 10, operation: 1 }, rules: [] },
-						{ uuid: uuidv4(), alias: 'alias 3', value: 100, state: 2, final_operation: { value: 20, operation: 2 }, rules: [] },
-						{ uuid: uuidv4(), alias: 'alias 4', value: 100, state: 3, final_operation: { value: 30, operation: 3 }, rules: [
-								{ uuid: uuidv4(), ruleType: 'rule-1', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 1 },
-								{ uuid: uuidv4(), ruleType: 'rule-2', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 1 },
-								{ uuid: uuidv4(), ruleType: 'rule-3', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 2 },
-								{ uuid: uuidv4(), ruleType: 'rule-4', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 3 },
-								{ uuid: uuidv4(), ruleType: 'rule-5', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 1 },
-								{ uuid: uuidv4(), ruleType: 'rule-6', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 2 },
-							]
-						},
+						// { uuid: uuidv4(), alias: 'alias 1', value: 100, state: 0, final_operation: { value: 0, operation: 0 }, rules: [] },
+						// { uuid: uuidv4(), alias: 'alias 2', value: 100, state: 1, final_operation: { value: 10, operation: 1 }, rules: [] },
+						// { uuid: uuidv4(), alias: 'alias 3', value: 100, state: 2, final_operation: { value: 20, operation: 2 }, rules: [] },
+						// { uuid: uuidv4(), alias: 'alias 4', value: 100, state: 3, final_operation: { value: 30, operation: 3 }, rules: [
+						// 		{ uuid: uuidv4(), ruleType: 'rule-1', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 1 },
+						// 		{ uuid: uuidv4(), ruleType: 'rule-2', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 1 },
+						// 		{ uuid: uuidv4(), ruleType: 'rule-3', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 2 },
+						// 		{ uuid: uuidv4(), ruleType: 'rule-4', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 3 },
+						// 		{ uuid: uuidv4(), ruleType: 'rule-5', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 1 },
+						// 		{ uuid: uuidv4(), ruleType: 'rule-6', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 2 },
+						// 	]
+						// },
 					],
 				},
 			})
