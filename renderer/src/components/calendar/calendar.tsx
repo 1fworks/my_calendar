@@ -41,18 +41,15 @@ export const Canlendar = () => {
 			if(!rulesInfo) return undefined
 			return (
 				{
-					uuid: '',
+					uuid: (rulesInfo?.uuid) ? (rulesInfo?.uuid) : uuidv4(),
 					alias: (rulesInfo?.alias) ? (rulesInfo?.alias) : '변수',
 					value: 0, // :)
 					state: 0, // :D
-					final_operation: {
-						value: (rulesInfo?.final_oper?.value) ? (rulesInfo?.final_oper?.value) : 0,
-						operation: (rulesInfo?.final_oper?.oper) ? (rulesInfo?.final_oper?.oper) : 0,
-					},
+					final_operation: (rulesInfo?.final_oper) ? (rulesInfo?.final_oper) : {},
 					rules: ((rulesInfo?.rules)===undefined ? [] : rulesInfo.rules).map(rule=>{
 						return (
 							{
-								uuid: '',
+								uuid: (rule?.uuid) ? (rule?.uuid) : uuidv4(),
 								ruleType: (rule?.ruleType) ? (rule?.ruleType) : 'rule-1',
 								ruleVal: (rule?.ruleVal && Array.isArray(rule.ruleVal) && rule.ruleVal.length > 6) ? lodash.cloneDeep(rule.ruleVal) : [1, 1, 1, 1, 1, 1, 1],
 								value: (rule?.value) ? (rule?.value) : 0,
@@ -89,14 +86,17 @@ export const Canlendar = () => {
 			}
 
 			const ary = lodash.cloneDeep(info_ary).map((element, j)=>{
-				const uuid = items[i]?.info?.ary[j]?.uuid
-				element.uuid = (uuid && uuid.length > 0) ? uuid : uuidv4()
-				element.rules = element.rules.map((rule, k)=>{
-					const uuid = items[i]?.info?.ary[j]?.rules[k]?.uuid
-					rule.uuid = (uuid && uuid.length) > 0 ? uuid : uuidv4()
-					return rule
-				})
-				return element
+				const f_oper = element.final_operation[date.format('YYYY-MM-DD')]
+				return {
+					...element,
+					final_operation : f_oper ? {
+						value: (f_oper?.value) ? (f_oper?.value) : 0,
+						operation: (f_oper?.oper) ? (f_oper?.oper) : 0,
+					} : {
+						value: 0,
+						operation: 0,
+					},
+				}
 			})
 			// =============================================================
 			

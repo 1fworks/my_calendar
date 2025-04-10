@@ -2,12 +2,16 @@ import { Dayjs } from "dayjs"
 import { getMemofileName, getSavfileName } from "./save_file"
 
 export interface Rules {
+  uuid: string,
   alias: string;
   final_oper: {
+    [key: string]: {
       value: number;
       oper: number;
+    }
   };
   rules: {
+      uuid: string,
       ruleType: string;
       ruleVal: number[];
       value: number;

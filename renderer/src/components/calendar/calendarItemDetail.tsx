@@ -149,7 +149,7 @@ const Rule = ({
         <div className="flex flex-col items-start justify-center gap-1">
           <div className="flex flex-row items-center justify-center">
             <input type="date" className={`h-fit div-border ${(parseInt(ruleVal[0])>=1900 && parseInt(ruleVal[1])>0 && parseInt(ruleVal[2])>0) ? '' : 'err-border'}`}
-              value={ !lodash.isEqual(original.ruleVal.slice(0, 3).map(val=>{return val.toString()}), ruleVal.slice(0, 3)) ?
+              value={ !original || !lodash.isEqual(original.ruleVal.slice(0, 3).map(val=>{return val.toString()}), ruleVal.slice(0, 3)) ?
                 undefined :
                 ((parseInt(ruleVal[0])>=1900 && parseInt(ruleVal[1])>0 && parseInt(ruleVal[2])>0) ? my_dayjs(`${ruleVal[0]}-${ruleVal[1]}-${ruleVal[2]}`).format('YYYY-MM-DD') : undefined)
               }
@@ -318,10 +318,11 @@ export const CanlendarItemDetail = ({
             <div className="flex flex-col gap-2 animate-climb100-animation">
               {
                 rules.map((element, i)=>{
+                  const idx = (originalDetail?.rules) ? originalDetail.rules.map(rule=>rule.uuid).indexOf(element.uuid) : -1
                   return (
                     <div key={`rule ${element.uuid}`}>
                       <Rule
-                        original={originalDetail.rules[i]}
+                        original={idx > -1 ? originalDetail.rules[idx] : undefined}
                         updateRule={(rule:CalendarRule)=>{updateRule(rule, i)}}
                         deleteRule={()=>{delRule(i)}}
                         ruleData={element}

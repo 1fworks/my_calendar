@@ -1,5 +1,7 @@
-import { CalendarRulesInfo } from "@/components/calendar/interface"
-import { Dayjs } from "dayjs"
+import { CalendarRulesInfo } from "@/components/calendar/interface";
+import { Dayjs } from "dayjs";
+import lodash from 'lodash';
+import { load_rules, Rules } from "./load_file";
 
 export const getSavfileName = (savfileSlot:number) => {
   return `./savfiles/sav-${savfileSlot}.json`
@@ -33,16 +35,28 @@ export const save_file = async(
   rulesInfo: CalendarRulesInfo[]
 ) => {
 
-  const data = rulesInfo.map(info=>{
+  const rulesInfoData = await load_rules(savfileSlot)
+
+  const data: Rules[] = rulesInfo.map((info, i)=>{
+    const idx = rulesInfoData.map(data=>data.uuid).indexOf(info.uuid)
+    const new_oper = idx > -1 ? rulesInfoData[idx].final_oper : {}
+    const key = date.format('YYYY-MM-DD')
+    if(info.final_operation.operation > 0) {
+      new_oper[key] = {
+        value: info.final_operation.value,
+        oper: info.final_operation.operation
+      }
+    }
+    else delete new_oper[key]
+
     return (
       {
+        uuid: info.uuid,
         alias: info.alias,
-        final_oper: {
-          value: info.final_operation.value,
-          oper: info.final_operation.operation,
-        },
+        final_oper: new_oper,
         rules: info.rules.map(rule=>{
           return {
+            uuid: rule.uuid,
             ruleType: rule.ruleType,
             ruleVal: rule.ruleVal,
             value: rule.value,
