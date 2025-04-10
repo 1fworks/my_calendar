@@ -20,6 +20,10 @@
             }
         }
         
+        .err-border {
+            @apply border-rose-500;
+        }
+        
         .overlay-shadow {
             @apply bg-black;
         }

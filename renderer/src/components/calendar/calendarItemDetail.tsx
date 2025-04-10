@@ -9,13 +9,16 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { CalendarRule, CalendarRulesInfo } from "./interface";
 import lodash from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import my_dayjs from "@/lib/mydayjs";
 
 const Rule = ({
   ruleData,
+  original,
   updateRule,
   deleteRule,
 }:{
   ruleData: CalendarRule,
+  original: CalendarRule,
   updateRule: (CalendarRule:CalendarRule)=>void,
   deleteRule: ()=>void,
 }) => {
@@ -55,7 +58,7 @@ const Rule = ({
       rule_val[0] = Math.min(Math.max(rule_val[0], 1), 31)
     }
     else if(ruleType === 'rule-6') {
-      rule_val[0] = Math.max(rule_val[0], 1)
+      rule_val[3] = Math.max(rule_val[3], 1)
     }
     if(
       !lodash.isEqual(ruleType, ruleData.ruleType) ||
@@ -143,12 +146,33 @@ const Rule = ({
         </div>
       }
       { ruleType === 'rule-6' && /* n일 간격으로 */
-        <div className="flex flex-row items-center justify-center">
-          <input type="number" min="1" className="h-fit div-border max-w-20"
-            value={ ruleVal[0] }
-            onChange={e=>{change_ruleVal(e, 0)}}
-          />
-          <span>일 간격으로</span>
+        <div className="flex flex-col items-start justify-center gap-1">
+          <div className="flex flex-row items-center justify-center">
+            <input type="date" className={`h-fit div-border ${(parseInt(ruleVal[0])>=1900 && parseInt(ruleVal[1])>0 && parseInt(ruleVal[2])>0) ? '' : 'err-border'}`}
+              value={ !lodash.isEqual(original.ruleVal.slice(0, 3).map(val=>{return val.toString()}), ruleVal.slice(0, 3)) ?
+                undefined :
+                ((parseInt(ruleVal[0])>=1900 && parseInt(ruleVal[1])>0 && parseInt(ruleVal[2])>0) ? my_dayjs(`${ruleVal[0]}-${ruleVal[1]}-${ruleVal[2]}`).format('YYYY-MM-DD') : undefined)
+              }
+              onChange={e=>{
+                const tmp = e.target.value.split('-')
+                if(tmp.length > 0) {
+                  const result = lodash.cloneDeep(ruleVal)
+                  result[0] = tmp[0]
+                  result[1] = tmp[1]
+                  result[2] = tmp[2]
+                  setRuleVal(result)
+                }
+              }}
+            />
+            <span> 부터</span>
+          </div>
+          <div className="flex flex-row items-center justify-center">
+            <input type="number" min="1" className="h-fit div-border max-w-20"
+              value={ ruleVal[3] }
+              onChange={e=>{change_ruleVal(e, 3)}}
+            />
+            <span>일 간격으로</span>
+          </div>
         </div>
       }
       <div className="flex flex-row items-center mb-1 mt-1">
@@ -175,10 +199,12 @@ const Rule = ({
 
 export const CanlendarItemDetail = ({
   ruleDetail,
+  originalDetail,
   delVariable,
   setRulesInfo,
 }:{
-  ruleDetail: CalendarRulesInfo
+  ruleDetail: CalendarRulesInfo,
+  originalDetail: CalendarRulesInfo,
   delVariable: Function,
   setRulesInfo: (rulesInfo:CalendarRulesInfo) => void
 }) => {
@@ -295,6 +321,7 @@ export const CanlendarItemDetail = ({
                   return (
                     <div key={`rule ${element.uuid}`}>
                       <Rule
+                        original={originalDetail.rules[i]}
                         updateRule={(rule:CalendarRule)=>{updateRule(rule, i)}}
                         deleteRule={()=>{delRule(i)}}
                         ruleData={element}

@@ -93,6 +93,8 @@ export const Item = ({
       setRules(lodash.cloneDeep(itemDetail.info.ary))
   }, [itemDetail])
 
+  const state = !lodash.isEqual(itemDetail.info.memo, memoContent) || !lodash.isEqual(itemDetail.info.ary, rules)
+
 	return (
     <>
       <div
@@ -102,16 +104,17 @@ export const Item = ({
       { active &&
         <div className="overlay-box">
           <div className="w-full h-full relative p-2 cursor-default flex flex-col" onClick={e=>e.stopPropagation()}>
-            <div className="w-full h-fit flex justify-between mb-3">
-              <button className="theme-switch" onClick={save}>
-                <FaSave />
-              </button>
-              <div className="w-full flex flex-row justify-center items-center">
-                <div className="date-text">
+            <div className="w-full h-fit flex justify-between items-center mb-3">
+              <div className="w-full flex flex-col mr-4">
+                <div className="date-text underline underline-offset-4">
                   {itemDetail.date.format('LL')}
                 </div>
+                <span className={`text-sm text-right ${state ? 'text-rose-500' : 'opacity-0'}`}>{state ? '변경 사항 있음 (저장 안됨)' : ':)'}</span>
               </div>
-              <button className="theme-switch" onClick={closeDetail}>  
+              <button className="theme-switch mr-2" onClick={save}>
+                <FaSave />
+              </button>
+              <button className="theme-switch" onClick={closeDetail}>
                 <MdCancel />
               </button>
             </div>
@@ -119,15 +122,22 @@ export const Item = ({
               <div className="absolute w-full top-0 bottom-0 pr-1 overflow-y-scroll flex flex-col gap-4">
                 <div className="div-border flex flex-col p-2">
                   <span className="w-fit mx-auto">메모</span>
-                  <textarea className="memo p-1 div-border" value={memoContent} onChange={(e)=>{setMemoContent(e.target.value)}}/>
+                  <textarea className="memo h-52 p-1 div-border" value={memoContent} onChange={(e)=>{setMemoContent(e.target.value)}}/>
                 </div>
                 <DividingLine />
+                <div className="flex flex-col">
+                  <span className="text-center font-bold">{`< 전역 변수 관리 >`}</span>
+                  { rules.length === 0 &&
+                    <span className="text-center opacity-50">아직 아무 변수도 없습니다...</span>
+                  }
+                </div>
                 {
                   rules.map((element, i)=>{
                     return (
                       <div key={`item d ${element.uuid}`} className="flex flex-col gap-1">
                         <CanlendarItemDetail
                           ruleDetail={element}
+                          originalDetail={lodash.cloneDeep(itemDetail.info.ary[i])}
                           setRulesInfo={(rulesInfo:CalendarRulesInfo)=>{setRulesInfo(i, rulesInfo)}}
                           delVariable={()=>{delVariable(i)}}
                         />

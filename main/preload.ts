@@ -16,6 +16,7 @@ const handler = {
   openExternal: (url:string) => ipcRenderer.invoke("open-external", url),
   loadFile: (filename:string) => ipcRenderer.invoke("load-file", filename),
   saveFile: (filename:string, data:object) => ipcRenderer.invoke("save-file", filename, data),
+  rmFile: (filename:string) => ipcRenderer.invoke("rm-file", filename),
 }
 
 contextBridge.exposeInMainWorld('ipc', handler)

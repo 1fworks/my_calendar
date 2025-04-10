@@ -60,3 +60,9 @@ ipcMain.handle("save-file", async(_, filename:string, data:object)=>{
   if(!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
   fs.writeFileSync(filename, JSON.stringify(data, null, 2))
 })
+
+ipcMain.handle("rm-file", async(_, filename:string)=>{
+  if(fs.existsSync(filename)){
+    fs.rmSync(filename)
+  }
+})

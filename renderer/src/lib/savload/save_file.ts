@@ -22,6 +22,7 @@ export const save_memo = async(
       favorite: favorite,
     })
   }
+  else window.ipc.rmFile(getMemofileName(savfileSlot, date))
 }
 
 export const save_file = async(

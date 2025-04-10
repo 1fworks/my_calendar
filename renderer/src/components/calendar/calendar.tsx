@@ -9,6 +9,7 @@ import { CalendarItemDataset } from './interface';
 import lodash from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { load_memo, load_rules } from "@/lib/savload/load_file";
+import { calculate_var } from "@/lib/calculationVar";
 
 export const Canlendar = () => {
 	const [ time, setTime ] = useState(my_dayjs('1111-1-1'))
@@ -87,10 +88,12 @@ export const Canlendar = () => {
 				favorite: typeof(memo.favorite)==='boolean'?memo.favorite:true,
 			}
 
-			const ary = lodash.cloneDeep(info_ary).map(element=>{
-				element.uuid = uuidv4()
-				element.rules = element.rules.map(rule=>{
-					rule.uuid = uuidv4()
+			const ary = lodash.cloneDeep(info_ary).map((element, j)=>{
+				const uuid = items[i]?.info?.ary[j]?.uuid
+				element.uuid = (uuid && uuid.length > 0) ? uuid : uuidv4()
+				element.rules = element.rules.map((rule, k)=>{
+					const uuid = items[i]?.info?.ary[j]?.rules[k]?.uuid
+					rule.uuid = (uuid && uuid.length) > 0 ? uuid : uuidv4()
 					return rule
 				})
 				return element
@@ -108,7 +111,7 @@ export const Canlendar = () => {
 				}
 			})
 		}
-		setItems(result)
+		setItems(calculate_var(result))
 	}
 
 	useEffect(() => {
@@ -120,7 +123,7 @@ export const Canlendar = () => {
 		else {
 			resetCalendarData()
 		}
-	}, [time]);
+	}, [time, savfileSlot]);
 
 	const nextPage = () => {
 		const t = time.add(1, 'month')
@@ -160,7 +163,7 @@ export const Canlendar = () => {
 				</div>
 				<CurrTime />
 				<div>
-					<div className="current-data grid grid-flow-col items-center">
+					<div className="current-data grid grid-flow-col items-center pt-1">
 						<button className="mr-2 p-2" onClick={prevPage}><BsChevronLeft /></button>
 						<div className="w-fit flex flex-row gap-1">
               <input

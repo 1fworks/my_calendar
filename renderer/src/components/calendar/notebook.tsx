@@ -32,9 +32,18 @@ export const NoteBook = ({
     }))
   }, [items])
 
-  const heartToggle = async(date: Dayjs) => {
+  useEffect(()=>{
+    if(!active && !lodash.isEqual(memos, items)) {
+      resetCalendarData()
+    }
+  }, [active])
+
+  const heartToggle = async(date: Dayjs, i: number) => {
     await heart_toggle(savfileSlot, date)
-    await resetCalendarData()
+    const newMemos = lodash.cloneDeep(memos)
+    newMemos[i].info.favorite = !newMemos[i].info.favorite
+    setMemos(newMemos)
+    // await resetCalendarData()
   }
 
   const openDetailPage = (data: CalendarItemDataset) => {
@@ -75,7 +84,7 @@ export const NoteBook = ({
                         key={`memo - ${i}`}
                       >
                         <div className="w-fit h-fit">
-                          <button className="theme-switch" onClick={async()=>{await heartToggle(item.date)}}>
+                          <button className="theme-switch" onClick={async()=>{await heartToggle(item.date, i)}}>
                             {item.info.favorite?<FaHeart />:<FaHeartBroken />}
                           </button>
                         </div>
@@ -83,7 +92,7 @@ export const NoteBook = ({
                           <div className="text-sm">
                             {item.date.format('LL')}
                           </div>
-                          <div className="memo-content">
+                          <div className={`memo-content ${item.info.favorite ? 'font-bold' : ''}`}>
                             {item.info.memo}
                           </div>
                         </div>

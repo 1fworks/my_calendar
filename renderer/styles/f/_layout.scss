@@ -102,7 +102,7 @@
 
     .calendar {
         @apply w-dvw;
-        height: calc(100dvh - 10rem);
+        height: calc(100dvh - 10.25rem);
     }
     .calendar-grid {
         @apply grid grid-cols-7 place-items-center gap-x-5 gap-y-3 mx-6;
