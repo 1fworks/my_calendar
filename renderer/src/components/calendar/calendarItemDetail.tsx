@@ -211,7 +211,7 @@ export const CanlendarItemDetail = ({
       })
       setRulesInfo(result)
     }
-  }, [f_value, oper, rules])
+  }, [f_value, oper, rules, alias])
 
   const updateRule = (rule: CalendarRule, i: number) => {
     const newRules:CalendarRule[] = lodash.cloneDeep(rules)

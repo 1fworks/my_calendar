@@ -4,18 +4,23 @@ import { FiEdit } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { CalendarItemDataset } from "./interface";
+import { heart_toggle } from "@/lib/savload/save_file";
+import { Dayjs } from "dayjs";
+import lodash from 'lodash';
 
 export const NoteBook = ({
   items,
+  savfileSlot,
   setDetailTrigger,
   resetCalendarData,
 }:{
   items:CalendarItemDataset[],
+  savfileSlot:number,
   setDetailTrigger:Dispatch<SetStateAction<string>>,
   resetCalendarData: () => Promise<void>
 }) => {
   const [ active, setActive ] = useState<boolean>(false)
-  const [ memos, setMemos ] = useState(items)
+  const [ memos, setMemos ] = useState(lodash.cloneDeep(items))
 
   useEffect(()=>{
     setMemos(items.map(item=>{
@@ -27,9 +32,9 @@ export const NoteBook = ({
     }))
   }, [items])
 
-  const heartToggle = async(date:string) => {
-    await window.ipc.heartToggle(date)
-    resetCalendarData()
+  const heartToggle = async(date: Dayjs) => {
+    await heart_toggle(savfileSlot, date)
+    await resetCalendarData()
   }
 
   const openDetailPage = (data: CalendarItemDataset) => {
@@ -70,7 +75,7 @@ export const NoteBook = ({
                         key={`memo - ${i}`}
                       >
                         <div className="w-fit h-fit">
-                          <button className="theme-switch" onClick={()=>{heartToggle(item.date.format('YYYY-MM-DD'))}}>
+                          <button className="theme-switch" onClick={async()=>{await heartToggle(item.date)}}>
                             {item.info.favorite?<FaHeart />:<FaHeartBroken />}
                           </button>
                         </div>

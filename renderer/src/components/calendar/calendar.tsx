@@ -8,12 +8,15 @@ import { NoteBook } from "./notebook";
 import { CalendarItemDataset } from './interface';
 import lodash from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { load_memo, load_rules } from "@/lib/savload/load_file";
 
 export const Canlendar = () => {
 	const [ time, setTime ] = useState(my_dayjs('1111-1-1'))
 	const [ date, setDate ] = useState('')
 	const [ items, setItems ] = useState<CalendarItemDataset[]>([])
 	const [ detailTrigger, setDetailTrigger ] = useState<string>('')
+
+	const [ savfileSlot, setSavefileSlot ] = useState<number>(1)
 
 	const resetCalendarData = async() => {
 		const start = time.startOf('month').day() // 0 (Sunday) to 6 (Saturday)
@@ -30,7 +33,39 @@ export const Canlendar = () => {
 		}
 
 		const result: CalendarItemDataset[] = []
-		item_data_ary.forEach((val, i)=>{
+		// =============================================================
+		const rulesInfos = await load_rules(savfileSlot)
+		const info_ary = rulesInfos ? rulesInfos.map(element=>{
+			const rulesInfo = lodash.cloneDeep(element)
+			if(!rulesInfo) return undefined
+			return (
+				{
+					uuid: '',
+					alias: (rulesInfo?.alias) ? (rulesInfo?.alias) : '변수',
+					value: 0, // :)
+					state: 0, // :D
+					final_operation: {
+						value: (rulesInfo?.final_oper?.value) ? (rulesInfo?.final_oper?.value) : 0,
+						operation: (rulesInfo?.final_oper?.oper) ? (rulesInfo?.final_oper?.oper) : 0,
+					},
+					rules: ((rulesInfo?.rules)===undefined ? [] : rulesInfo.rules).map(rule=>{
+						return (
+							{
+								uuid: '',
+								ruleType: (rule?.ruleType) ? (rule?.ruleType) : 'rule-1',
+								ruleVal: (rule?.ruleVal && Array.isArray(rule.ruleVal) && rule.ruleVal.length > 6) ? lodash.cloneDeep(rule.ruleVal) : [1, 1, 1, 1, 1, 1, 1],
+								value: (rule?.value) ? (rule?.value) : 0,
+								operation: (rule?.oper) ? (rule?.oper) : 1,
+							}
+						)
+					})
+				}
+			)
+		}).filter(element=>element!==undefined)
+		:[]
+		// =============================================================
+		
+		for( const [i, val] of item_data_ary.entries() ){
 			let isCurrMonth = true
 			let date = time
 			if(val < 0) {
@@ -43,30 +78,36 @@ export const Canlendar = () => {
 				}
 			}
 			else date = time.startOf('month').add(val-1, 'days')
+			
+			// =============================================================
+			let memo = await load_memo(savfileSlot, date)
+			if(memo === undefined) memo = { content: '', favorite: true }
+			memo = {
+				content: memo.content?memo.content:'',
+				favorite: typeof(memo.favorite)==='boolean'?memo.favorite:true,
+			}
+
+			const ary = lodash.cloneDeep(info_ary).map(element=>{
+				element.uuid = uuidv4()
+				element.rules = element.rules.map(rule=>{
+					rule.uuid = uuidv4()
+					return rule
+				})
+				return element
+			})
+			// =============================================================
+			
 			result.push({
 				val: val,
 				isCurrMonth: isCurrMonth,
 				date: date,
 				info: {
-					memo: i%3==0?'test memo':'',
-					favorite: i%2==0?true:false,
-					ary: [
-						// { uuid: uuidv4(), alias: 'alias 1', value: 100, state: 0, final_operation: { value: 0, operation: 0 }, rules: [] },
-						// { uuid: uuidv4(), alias: 'alias 2', value: 100, state: 1, final_operation: { value: 10, operation: 1 }, rules: [] },
-						// { uuid: uuidv4(), alias: 'alias 3', value: 100, state: 2, final_operation: { value: 20, operation: 2 }, rules: [] },
-						// { uuid: uuidv4(), alias: 'alias 4', value: 100, state: 3, final_operation: { value: 30, operation: 3 }, rules: [
-						// 		{ uuid: uuidv4(), ruleType: 'rule-1', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 1 },
-						// 		{ uuid: uuidv4(), ruleType: 'rule-2', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 1 },
-						// 		{ uuid: uuidv4(), ruleType: 'rule-3', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 2 },
-						// 		{ uuid: uuidv4(), ruleType: 'rule-4', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 3 },
-						// 		{ uuid: uuidv4(), ruleType: 'rule-5', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 1 },
-						// 		{ uuid: uuidv4(), ruleType: 'rule-6', ruleVal: [1, 1, 1, 1, 1, 1, 1], value: 0, operation: 2 },
-						// 	]
-						// },
-					],
-				},
+					memo: memo.content,
+					favorite: memo.favorite,
+					ary: ary,
+				}
 			})
-		})
+		}
 		setItems(result)
 	}
 
@@ -93,13 +134,13 @@ export const Canlendar = () => {
 		setDate(t.format('YYYY-MM'))
   }
 
-	const setItem = (i:number, item: CalendarItemDataset) => {
-		const newItems:CalendarItemDataset[] = lodash.cloneDeep(items)
-		if(newItems.length > i) {
-			newItems[i] = item
-			setItems(newItems)
-		}
-	}
+	// const setItem = (i:number, item: CalendarItemDataset) => {
+	// 	const newItems:CalendarItemDataset[] = lodash.cloneDeep(items)
+	// 	if(newItems.length > i) {
+	// 		newItems[i] = item
+	// 		setItems(newItems)
+	// 	}
+	// }
 
 	const header = [1, 2, 3, 4, 5, 6, 7].map(val=>{
 		return my_dayjs(`2024-12-${val}`).format('ddd')
@@ -109,7 +150,12 @@ export const Canlendar = () => {
 		<>
 			<div className="calendar">
 				<div className="p-2 absolute top-0 left-0 flex flex-row gap-2">
-					<NoteBook items={items} setDetailTrigger={setDetailTrigger} resetCalendarData={resetCalendarData} />
+					<NoteBook
+						items={items}
+						savfileSlot={savfileSlot}
+						setDetailTrigger={setDetailTrigger}
+						resetCalendarData={resetCalendarData}
+					/>
 					<ThemeSwitch />
 				</div>
 				<CurrTime />
@@ -155,8 +201,9 @@ export const Canlendar = () => {
 						<div className='calendar-grid h-full'>
 							{ items.map((item, i)=>{
 									return (
-										<div key={`item-${i}`} className="w-full h-full grid items-center">
+										<div key={`item-${item.date.format('YYYY-MM-DD')}`} className="w-full h-full grid items-center">
 											<Item
+												savfileSlot={savfileSlot}
 												itemDetail={item}
 												resetCalendar={resetCalendarData}
 												// setItem={(item:CalendarItemDataset)=>{setItem(i, item)}}

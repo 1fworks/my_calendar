@@ -46,15 +46,17 @@ ipcMain.handle("open-external", async(_, url:string)=>{
   await shell.openExternal(url)
 })
 
-ipcMain.handle("heart-toggle", async(_, date:string)=>{
-  console.log(date)
-})
-
 ipcMain.handle("load-file", async(_, filename:string)=>{
-  console.log(filename)
+  if(fs.existsSync(filename)) {
+    const buffer = fs.readFileSync(filename, 'utf-8')
+    const json_data = JSON.parse(buffer)
+    return json_data
+  }
+  return undefined
 })
 
 ipcMain.handle("save-file", async(_, filename:string, data:object)=>{
-  if(!fs.existsSync('savfiles/')) fs.mkdirSync('savfiles', { recursive: true })
-  console.log(filename, JSON.stringify(data))
+  const dir = path.dirname(filename);
+  if(!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+  fs.writeFileSync(filename, JSON.stringify(data, null, 2))
 })

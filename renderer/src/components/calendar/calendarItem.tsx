@@ -8,13 +8,16 @@ import { ItemInfo } from "./ItemInfo";
 import { CalendarItemDataset, CalendarRule, CalendarRulesInfo } from "./interface";
 import lodash from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { save_file } from "@/lib/savload/save_file";
 
 export const Item = ({
+  savfileSlot,
 	itemDetail,
   detailTrigger,
   // setItem,
   resetCalendar,
 }:{
+  savfileSlot:number,
 	itemDetail:CalendarItemDataset,
   detailTrigger: {
     val: string,
@@ -27,9 +30,9 @@ export const Item = ({
   const [ memoContent, setMemoContent ] = useState<string>(itemDetail.info.memo)
   const [ rules, setRules ] = useState<CalendarRulesInfo[]>(lodash.cloneDeep(itemDetail.info.ary))
   
-  const save = () => {
-    console.log(`save-${itemDetail.date.format('YYYY-MM-DD')}:${memoContent}`)
-    resetCalendar()
+  const save = async() => {
+    await save_file(savfileSlot, itemDetail.date, memoContent, itemDetail.info.favorite, lodash.cloneDeep(rules))
+    await resetCalendar()
   }
 
   const closeDetail = () => {
@@ -82,6 +85,13 @@ export const Item = ({
       detailTrigger.reset()
     }
   }, [detailTrigger.val])
+
+  useEffect(()=>{
+    if(!lodash.isEqual(memoContent, itemDetail.info.memo))
+      setMemoContent(itemDetail.info.memo)
+    if(!lodash.isEqual(rules, itemDetail.info.ary))
+      setRules(lodash.cloneDeep(itemDetail.info.ary))
+  }, [itemDetail])
 
 	return (
     <>
