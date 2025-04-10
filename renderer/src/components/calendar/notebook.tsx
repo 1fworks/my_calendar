@@ -64,7 +64,7 @@ export const NoteBook = ({
           { active && 
             <div className="w-full h-full flex flex-col gap-2">
               <div className="w-full ml-auto pt-2 pl-4 pr-2 flex flex-row items-center gap-2">
-                <span className="flex-1 font-bold text-lg">메모지</span>
+                <span className="flex-1 font-bold text-lg memo-underline">메모지</span>
                 <button
                   className="theme-switch"
                   onClick={()=>{
@@ -85,7 +85,7 @@ export const NoteBook = ({
                       >
                         <div className="w-fit h-fit">
                           <button className="theme-switch" onClick={async()=>{await heartToggle(item.date, i)}}>
-                            {item.info.favorite?<FaHeart />:<FaHeartBroken />}
+                            {item.info.favorite?<FaHeart className="fill-rose-500" />:<FaHeartBroken />}
                           </button>
                         </div>
                         <div className="flex-1 flex flex-col">

@@ -227,10 +227,10 @@ export const CanlendarItemDetail = ({
       const result = lodash.cloneDeep({
         uuid: ruleDetail.uuid,
         alias: alias,
-        value: value,
+        value: ruleDetail.value,
         state: ruleDetail.state,
         final_operation: {
-          value: ruleDetail.final_operation.value,
+          value: value,
           operation: oper,
         },
         rules: rules
@@ -284,7 +284,7 @@ export const CanlendarItemDetail = ({
           </div>
         </div>
         
-        <div className="flex flex-row justify-center p-1">
+        <div className="flex flex-row justify-center p-1 ping-edit">
           <button className="mini-svg mr-1 flex flex-row items-center" onClick={()=>{
             setOper((oper+1) % 4)
           }}>
@@ -296,10 +296,16 @@ export const CanlendarItemDetail = ({
             { oper === 3 && <><TiMinus/><span className="mr-2">감소</span></> }
           </button>
           { oper > 0 &&
-            <input type="number" className="div-border max-w-52 input-mx0"
-              value={f_value} onChange={e=>{setF_value(e.target.value?e.target.value:'')}}
-            />
+            <>
+              <input type="number" className="div-border max-w-52 input-mx0"
+                value={f_value} onChange={e=>{setF_value(e.target.value?e.target.value:'')}}
+              />
+              <div className="ml-1 ping">
+                <div className="ping animate-ping" />
+              </div>
+            </>
           }
+          
         </div>
 
         <hr className="item-hr mx-1"/>

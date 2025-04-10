@@ -94,6 +94,8 @@ export const Item = ({
   }, [itemDetail])
 
   const state = !lodash.isEqual(itemDetail.info.memo, memoContent) || !lodash.isEqual(itemDetail.info.ary, rules)
+  const val_update = itemDetail.info.ary.map(info=>info.state > 0).filter(element=>element===true).length > 0
+  const val_edit = itemDetail.info.ary.map(info=>info.final_operation.operation > 0).filter(element=>element===true).length > 0
 
 	return (
     <>
@@ -106,7 +108,7 @@ export const Item = ({
           <div className="w-full h-full relative p-2 cursor-default flex flex-col" onClick={e=>e.stopPropagation()}>
             <div className="w-full h-fit flex justify-between items-center mb-3">
               <div className="w-full flex flex-col mr-4">
-                <div className="date-text underline underline-offset-4">
+                <div className={`date-text ${memoContent.length > 0 ? 'memo-underline':''}`}>
                   {itemDetail.date.format('LL')}
                 </div>
                 <span className={`text-sm text-right ${state ? 'text-rose-500' : 'opacity-0'}`}>{state ? '변경 사항 있음 (저장 안됨)' : ':)'}</span>
@@ -165,11 +167,11 @@ export const Item = ({
           { (itemDetail.info.ary.length > 0 || itemDetail.info.memo.length > 0) &&
             <ItemInfo info={itemDetail.info} id={`slot-${itemDetail.date.format('YYYY-MM-DD')}`}/>
           }
-          <button className={`calendar-circle ${itemDetail.info.memo.length > 0?'underline underline-offset-4 decoration-2 decoration-rose-500':''}`} onClick={showDetail}>
-            <div className="w-fit h-fit relative">
-              { true && itemDetail.info.ary.map(info=>info.state > 0).filter(element=>element===true).length > 0 &&
-                <div className="ping -right-2 -top-1">
-                  <div className="ping animate-ping" />
+          <button className={`calendar-circle ${itemDetail.info.memo.length > 0?'memo-underline':''}`} onClick={showDetail}>
+            <div className={`w-fit h-fit relative ${val_edit?'ping-edit':''}`}>
+              { val_update &&
+                <div className="absolute ping -right-2 -top-1">
+                  <div className="absolute ping animate-ping" />
                 </div>
               }
               {itemDetail.date.format('D')}

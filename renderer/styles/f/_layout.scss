@@ -208,7 +208,15 @@
         @apply text-purple-500;
     }
     .ping {
-        @apply absolute rounded-full bg-gray-400 opacity-50;
+        @apply rounded-full bg-gray-400 opacity-50;
         @apply size-2;
+    }
+    .ping-edit {
+        .ping {
+            @apply bg-purple-500 opacity-100;
+        }
+    }
+    .memo-underline {
+        @apply underline underline-offset-4 decoration-2 decoration-purple-500;
     }
 }
