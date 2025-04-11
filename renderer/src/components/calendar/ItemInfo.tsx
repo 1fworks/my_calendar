@@ -76,7 +76,7 @@ export const ItemInfo = ({
                 key={`val-data ${i}`}
                 className={state[element.state]}
               >
-                <span className="font-normal mr-1">{element.alias} =</span><span className="text-lg">{element.value} {state_msg[element.state]}</span>
+                <span className="font-normal mr-1">{element.alias} =</span><span className="text-lg">{element.value!==undefined?element.value:'???'} {state_msg[element.state]}</span>
               </div>
             )
           })

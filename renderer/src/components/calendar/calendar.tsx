@@ -63,12 +63,13 @@ export const Canlendar = () => {
 		:[]
 		// =============================================================
 		
-		for( const [i, val] of item_data_ary.entries() ){
+		const ary = [item_data_ary[0]-1, ...item_data_ary]
+		for( const [i, val] of ary.entries() ){
 			let isCurrMonth = true
 			let date = time
 			if(val < 0) {
 				isCurrMonth = false
-				if(i < 7) {
+				if(i < 7 + 1) { // if(i < 7)
 					date = time.startOf('month').subtract(Math.abs(val), 'days')
 				}
 				else {
@@ -85,7 +86,7 @@ export const Canlendar = () => {
 				favorite: typeof(memo.favorite)==='boolean'?memo.favorite:true,
 			}
 
-			const ary = lodash.cloneDeep(info_ary).map((element, j)=>{
+			const ary = lodash.cloneDeep(info_ary).map((element)=>{
 				const f_oper = element.final_operation[date.format('YYYY-MM-DD')]
 				return {
 					...element,
@@ -111,7 +112,9 @@ export const Canlendar = () => {
 				}
 			})
 		}
-		setItems(calculate_var(result))
+		setItems(calculate_var(result, rulesInfos.map(r=>{
+			return ({ uuid: r.uuid, final_oper: r.final_oper })
+		})))
 	}
 
 	useEffect(() => {
@@ -202,7 +205,7 @@ export const Canlendar = () => {
 							}
 						</div>
 						<div className='calendar-grid h-full'>
-							{ items.map((item, i)=>{
+							{ items.map((item)=>{
 									return (
 										<div key={`item-${item.date.format('YYYY-MM-DD')}`} className="w-full h-full grid items-center">
 											<Item
