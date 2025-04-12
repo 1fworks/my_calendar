@@ -130,7 +130,7 @@ const Rule = ({
         <div className="flex flex-row gap-[0.1rem] items-center justify-center mb-2">
           <span className="mr-1">매주</span>
           {
-            ['월','화','수','목','금','토','일'].map((val, i)=>{
+            ['일','월','화','수','목','금','토'].map((val, i)=>{
               return (
                 <div className="flex flex-col items-center justify-center" key={`key ${val}`}>
                   <label>{val}</label>

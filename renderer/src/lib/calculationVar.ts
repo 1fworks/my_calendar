@@ -1,6 +1,7 @@
 import { CalendarItemDataset, CalendarRulesInfo } from "@/components/calendar/interface";
 import { Dayjs } from "dayjs";
 import my_dayjs from "./mydayjs";
+import lodash from 'lodash';
 
 const calculate = (
   date: Dayjs,
@@ -9,7 +10,7 @@ const calculate = (
   },
   rulesInfo: CalendarRulesInfo
 ) => {
-  let value = 0;
+  let value = 0; // 값 (초기화 되는 날짜 기준)
   let state = 0;
   const f_oper = rulesInfo.final_operation.operation
   const f_value = rulesInfo.final_operation.value
@@ -52,7 +53,7 @@ const calculate = (
     reset_rules.forEach(rule=>{
       let date_ary = []
       if(rule.ruleType === 'rule-1') {
-        const tmp = start.set('month', rule.ruleVal[0]).set('date', rule.ruleVal[1])
+        const tmp = start.set('month', rule.ruleVal[0]-1).set('date', rule.ruleVal[1])
         date_ary = [ tmp, tmp.subtract(1, 'year') ]
       }
       else if(rule.ruleType === 'rule-2') {
@@ -74,7 +75,7 @@ const calculate = (
         }
       }
       else if(rule.ruleType === 'rule-5') {
-        [ curr_date ]
+        date_ary = [ curr_date ]
       }
       else if(rule.ruleType === 'rule-6') {
         const rule_start = my_dayjs(`${rule.ruleVal[0]}-${rule.ruleVal[1]}-${rule.ruleVal[2]}`)
@@ -88,31 +89,73 @@ const calculate = (
       value = undefined
     }
     else {
-      rulesInfo.rules.forEach(rule=>{
-        let iter = 0
+      lodash.cloneDeep(rulesInfo.rules).reverse().forEach(rule=>{
+        const diff_val = curr_date.diff(recent_reset, 'day')
+        let iter = -1
         if(rule.ruleType === 'rule-1') { // 매년 n월 n일
-          
+          const tmp = recent_reset.format('YYYY-MM-DD').split('-').map(v=>parseInt(v))
+          const curr = curr_date.add(1, 'day').format('YYYY-MM-DD').split('-').map(v=>parseInt(v))
+          iter = (curr[0] - tmp[0])
+          if(recent_reset.valueOf() <= recent_reset.set('month', rule.ruleVal[0]-1).set('date', rule.ruleVal[1]).valueOf()) {
+            iter += 1
+          }
+          if(curr_date_val <= curr_date.set('month', rule.ruleVal[0]-1).set('date', rule.ruleVal[1]).valueOf()) {
+            iter -= 1
+          }
+          iter = Math.max(iter-1, 0)
         }
         else if(rule.ruleType === 'rule-2') { // 매달 n일
-          
+          const tmp = recent_reset.format('YYYY-MM-DD').split('-').map(v=>parseInt(v))
+          const curr = curr_date.add(1, 'day').format('YYYY-MM-DD').split('-').map(v=>parseInt(v))
+          iter = (curr[0] - tmp[0]) * 12 + (curr[1] - tmp[1])
+          if(tmp[2] > rule.ruleVal[0]) {
+            iter -= 1
+          }
+          if(curr[2] > rule.ruleVal[0]) {
+            iter += 1
+          }
+          iter = Math.max(iter-1, 0)
         }
         else if(rule.ruleType === 'rule-3') { // 매달 마지막 날
-          
+          const tmp = recent_reset.format('YYYY-MM').split('-').map(v=>parseInt(v))
+          const curr = curr_date.add(1, 'day').format('YYYY-MM-DD').split('-').slice(0, 2).map(v=>parseInt(v))
+          iter = (curr[0] - tmp[0]) * 12 + (curr[1] - tmp[1])
+          iter = Math.max(iter-1, 0)
         }
         else if(rule.ruleType === 'rule-4') { // 매주 *요일
-          
+          const val_ary = rule.ruleVal.map((val, i)=>{
+            if(val > 0) return i
+          }).filter(e=>e!==undefined)
+          iter = Math.floor(diff_val / 7) * val_ary.length
+          for(let j=1; j<=(diff_val%7); j+=1) {
+            const tmp = recent_reset.add(j, 'day')
+            if(val_ary.indexOf(tmp.day()) > -1) iter += 1
+          }
         }
         else if(rule.ruleType === 'rule-5') { // 매일
-          iter = Math.abs(recent_reset.diff(curr_date, 'day'))
+          iter = diff_val
         }
         else if(rule.ruleType === 'rule-6') { // n일 간격으로
-          
+          const rule_start = my_dayjs(`${rule.ruleVal[0]}-${rule.ruleVal[1]}-${rule.ruleVal[2]}`)
+          let diff = curr_date.diff(rule_start, 'day')
+          const tmp = recent_reset.diff(rule_start, 'day')
+          if(diff >= 0) {
+            if(rule.ruleVal[3] !== undefined && rule.ruleVal[3] > 0) {
+              iter = Math.floor(diff/rule.ruleVal[3])
+              if(recent_reset.valueOf() >= rule_start.valueOf()) {
+                iter -= Math.floor(tmp/rule.ruleVal[3])
+              }
+            }
+          }
         }
-        if(rule.operation === 2) { // plus
-          value += rule.value * iter
-        }
-        else if(rule.operation === 3) { // minus
-          value -= rule.value * iter
+        if(iter >= 0) {
+          if(rule.operation === 2) { // plus
+            value += rule.value * iter
+          }
+          else if(rule.operation === 3) { // minus
+            value -= rule.value * iter
+          }
+          else value = rule.value * iter // reset
         }
       })
       if(f_oper === 2) value += f_value
