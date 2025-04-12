@@ -14,6 +14,9 @@ export const CurrTime = () => {
 	}, []);
 	
 	return (
-		<div className="current-time">{time.format('LL LTS')}</div>
+		<div className="current-time flex flex-col">
+			<span>{time.format('LL')}</span>
+			<span>{time.format('LTS')}</span>
+		</div>
 	)
 }

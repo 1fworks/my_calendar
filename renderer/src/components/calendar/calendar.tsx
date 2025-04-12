@@ -151,16 +151,20 @@ export const Canlendar = () => {
 	const header = [1, 2, 3, 4, 5, 6, 7].map(val=>{
 		return my_dayjs(`2024-12-${val}`).format('ddd')
 	})
+	const check = date.split('-').length > 0 && parseInt(date.split('-')[0]) >= 1900
 
 	return (
 		<>
 			<div className="calendar">
 				<div className="p-2 absolute top-0 left-0 flex flex-row gap-2">
 					<NoteBook
-						items={items}
+						items={check?items:[]}
 						savfileSlot={savfileSlot}
 						setDetailTrigger={setDetailTrigger}
 						resetCalendarData={resetCalendarData}
+						date={date}
+						prevPage={prevPage}
+						nextPage={nextPage}
 					/>
 					<ThemeSwitch />
 				</div>
@@ -189,7 +193,7 @@ export const Canlendar = () => {
 						<button className="ml-2 p-2" onClick={nextPage}><BsChevronRight /></button>
 					</div>
 				</div>
-				{ date.split('-').length > 0 && parseInt(date.split('-')[0]) >= 1900 &&
+				{ check &&
 					<>
 						<div className='calendar-grid pt-5'>
 							{ header.map((val, i)=>{

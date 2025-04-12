@@ -207,6 +207,12 @@
     }
     .memo-content {
         @apply text-wrap break-words;
+        @include media-query($on-mini) {
+            @apply text-sm;
+        }
+        span {
+            @apply text-wrap break-words;
+        }
     }
     .val-plus {
         @apply text-teal-500;
