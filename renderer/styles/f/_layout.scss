@@ -54,6 +54,16 @@
         }
     }
 
+    .super-mini-svg {
+        @apply h-fit aspect-square;
+        svg {
+            @apply size-4 m-1;
+            @include media-query($on-mini) {
+                @apply size-3;
+            }
+        }
+    }
+
     input {
         @apply px-2 mx-1 w-full;
     }

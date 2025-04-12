@@ -1,6 +1,8 @@
 import { TiPlus, TiMinus } from "react-icons/ti";
 import { RiDeleteBin2Fill } from "react-icons/ri";
 import { PiStarFourFill, PiArrowBendDownRightBold } from "react-icons/pi";
+import { FaSquareCaretUp, FaSquareCaretDown } from "react-icons/fa6";
+import { ImSpinner11 } from "react-icons/im";
 import { FaEquals } from "react-icons/fa";
 import { LuBookPlus } from "react-icons/lu";
 import { SiEducative } from "react-icons/si";
@@ -12,15 +14,21 @@ import { v4 as uuidv4 } from 'uuid';
 import my_dayjs from "@/lib/mydayjs";
 
 const Rule = ({
+  num,
+  maxnum,
   ruleData,
   original,
   updateRule,
   deleteRule,
+  changeRule,
 }:{
+  num: number,
+  maxnum: number,
   ruleData: CalendarRule,
   original: CalendarRule,
   updateRule: (CalendarRule:CalendarRule)=>void,
   deleteRule: ()=>void,
+  changeRule: (option:number)=>void,
 }) => {
   const [ ruleType, setRuleType ] = useState<string>(ruleData.ruleType)
   const [ ruleVal, setRuleVal ] = useState<string[]>(ruleData.ruleVal.map(val=>{return val.toString()}))
@@ -82,7 +90,7 @@ const Rule = ({
         <div className="mini-svg">
           <PiArrowBendDownRightBold />
         </div>
-        <div className="ml-2 w-full h-fit">
+        <div className="ml-2 w-full h-fit flex flex-row">
           <select className="div-border" value={ruleType} name="rule" onChange={(e)=>{
               setRuleType(e.target.value)
               if(e.target.value !== 'rule-4')
@@ -101,6 +109,7 @@ const Rule = ({
         </div>
         <button className="mini-svg ml-auto" onClick={()=>{deleteRule()}}><RiDeleteBin2Fill/></button>
       </div>
+
       { ruleType === 'rule-1' && /* 매년 n월 n일 */
         <div className="flex flex-row items-center justify-center">
           <span>매년</span>
@@ -176,6 +185,15 @@ const Rule = ({
         </div>
       }
       <div className="flex flex-row items-center mb-1 mt-1">
+        
+        { original !== undefined && (original.operation !== oper || original.value.toString() !== value) && // rollback
+          <button className="super-mini-svg mr-1" onClick={()=>{
+            setOper(original.operation)
+            setValue(original.value.toString())
+          }}>
+            <ImSpinner11 />
+          </button>
+        }
         <button className="mini-svg ml-auto flex flex-row items-center pr-2" onClick={()=>{
           let tmp = (oper + 1)%4
           if(tmp === 0) tmp = 1
@@ -192,6 +210,15 @@ const Rule = ({
         <input type="number" className="h-fit div-border"
           value={value} onChange={(e)=>{setValue(e.target.value?e.target.value:'')}}
         />
+      </div>
+      <div className="flex flex-row items-center m-1 div-border py-1 px-2 mr-auto">
+        <span>계산 순서: {num}</span>
+        <button className={`super-mini-svg ml-3 mr-1 ${num === maxnum?'opacity-50 cursor-default':''}`} onClick={()=>{
+          if(num !== maxnum) changeRule(0)
+        }}><FaSquareCaretUp /></button>
+        <button className={`super-mini-svg ${num === 1?'opacity-50 cursor-default':''}`} onClick={()=>{
+          if(num !== 1) changeRule(1)
+        }}><FaSquareCaretDown /></button>
       </div>
     </div>
   )
@@ -245,8 +272,18 @@ export const CanlendarItemDetail = ({
     setRules(newRules)
   }
 
+  const changeRule = (i:number, option:number) => {
+    let target = i-1
+    if(option === 1) target = i+1
+    if(target < 0 || target >= rules.length) return;
+    const newRules:CalendarRule[] = lodash.cloneDeep(rules)
+    const tmp = newRules[target]
+    newRules[target] = newRules[i]
+    newRules[i] = tmp
+    setRules(newRules)
+  }
+
   const addRule = () => {
-    if(!openRule) setOpenRule(true)
     const newRules:CalendarRule[] = lodash.cloneDeep(rules)
     newRules.push({
       uuid: uuidv4(),
@@ -256,6 +293,7 @@ export const CanlendarItemDetail = ({
       operation: 1,
     })
     setRules(newRules)
+    if(!openRule) setOpenRule(true)
   }
 
   const delVar = () => {
@@ -285,6 +323,20 @@ export const CanlendarItemDetail = ({
         </div>
         
         <div className="flex flex-row justify-center p-1 ping-edit">
+          {
+            originalDetail !== undefined && ( originalDetail.final_operation.operation !== oper || originalDetail.final_operation.value.toString() !== f_value)
+            && // rollback
+            <button
+              className="super-mini-svg mr-1"
+              onClick={()=>{
+                setOper(originalDetail.final_operation.operation)
+                setF_value(originalDetail.final_operation.value.toString())
+              }}
+            ><ImSpinner11 /></button>
+          }
+          { oper !== 0 &&
+            <button className="super-mini-svg mr-1" onClick={()=>{setOper(0)}}><SiEducative /></button>
+          }
           <button className="mini-svg mr-1 flex flex-row items-center" onClick={()=>{
             setOper((oper+1) % 4)
           }}>
@@ -305,8 +357,10 @@ export const CanlendarItemDetail = ({
               </div>
             </>
           }
-          
         </div>
+        { openRule &&
+          <span className="text-center">↑ 마지막 계산 ↑</span>
+        }
 
         <hr className="item-hr mx-1"/>
 
@@ -328,6 +382,9 @@ export const CanlendarItemDetail = ({
                   return (
                     <div key={`rule ${element.uuid}`}>
                       <Rule
+                        num={rules.length - i}
+                        maxnum={rules.length}
+                        changeRule={(option:number)=>{changeRule(i, option)}}
                         original={idx > -1 ? originalDetail.rules[idx] : undefined}
                         updateRule={(rule:CalendarRule)=>{updateRule(rule, i)}}
                         deleteRule={()=>{delRule(i)}}
