@@ -13,6 +13,9 @@
 
     button {
         @apply transition-[font-weight];
+        span {
+            @apply transition-[font-weight];
+        }
         svg {
             @apply opacity-50;
         }

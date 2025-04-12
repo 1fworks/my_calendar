@@ -10,6 +10,7 @@ import lodash from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { load_memo, load_rules } from "@/lib/savload/load_file";
 import { calculate_var } from "@/lib/calculationVar";
+import { Profile } from "./profile";
 
 export const Canlendar = () => {
 	const [ time, setTime ] = useState(my_dayjs('1111-1-1'))
@@ -165,6 +166,9 @@ export const Canlendar = () => {
 						date={date}
 						prevPage={prevPage}
 						nextPage={nextPage}
+					/>
+					<Profile
+						savfileSlot={savfileSlot}
 					/>
 					<ThemeSwitch />
 				</div>
