@@ -1,7 +1,53 @@
-import { CalendarItemDataset, CalendarRulesInfo } from "@/components/calendar/interface";
+import { CalendarItemDataset, CalendarRule, CalendarRulesInfo } from "@/components/calendar/interface";
 import { Dayjs } from "dayjs";
 import my_dayjs from "./mydayjs";
 import lodash from 'lodash';
+
+const get_reset_value = (date: Dayjs, rules: CalendarRule[]) => {
+  let value = 0
+  rules.forEach(rule => {
+    let check = false
+    if(rule.ruleType === 'rule-1'){ // 매년 n월 n일
+      if(date.month()+1 === rule.ruleVal[0] && date.date() === rule.ruleVal[1])
+        check = true
+    }
+    else if(rule.ruleType === 'rule-2'){ // 매달 n일
+      if(date.date() === rule.ruleVal[0])
+        check = true
+    }
+    else if(rule.ruleType === 'rule-3'){ // 매달 마지막 날
+      if(date.date() === date.endOf('month').date())
+        return true 
+    }
+    else if(rule.ruleType === 'rule-4'){ // 매주 *요일
+      const val_ary = rule.ruleVal.map((val, i)=>{
+        if(val > 0) return i
+      }).filter(e=>e!==undefined)
+      if(val_ary.indexOf(date.day()) > -1) return true
+    }
+    else if(rule.ruleType === 'rule-5'){ // 매일
+      return true
+    }
+    else if(rule.ruleType === 'rule-6'){ // n일 간격으로
+      const rule_start = my_dayjs(`${rule.ruleVal[0]}-${rule.ruleVal[1]}-${rule.ruleVal[2]}`)
+      const diff = date.diff(rule_start, 'day')
+      if(diff >= 0) {
+        if(diff % rule.ruleVal[3] === 0) return true
+      }
+    }
+
+    if(check) {
+      if(rule.operation === 2) { // plus
+        value += rule.value
+      }
+      else if(rule.operation === 3) { // minus
+        value -= rule.value
+      }
+      else value = rule.value // reset
+    }
+  })
+  return value
+}
 
 const calculate = (
   date: Dayjs,
@@ -89,7 +135,9 @@ const calculate = (
       value = undefined
     }
     else {
-      lodash.cloneDeep(rulesInfo.rules).reverse().forEach(rule=>{
+      const rules = lodash.cloneDeep(rulesInfo.rules).reverse()
+      value = get_reset_value(recent_reset, rules)
+      rules.forEach(rule=>{
         const diff_val = curr_date.diff(recent_reset, 'day')
         let iter = -1
         if(rule.ruleType === 'rule-1') { // 매년 n월 n일
@@ -155,7 +203,7 @@ const calculate = (
           else if(rule.operation === 3) { // minus
             value -= rule.value * iter
           }
-          else value = rule.value * iter // reset
+          // else if(diff_val === 0) value = rule.value // reset
         }
       })
       if(f_oper === 2) value += f_value
