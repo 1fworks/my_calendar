@@ -137,6 +137,18 @@ const calculate = (
     else {
       const rules = lodash.cloneDeep(rulesInfo.rules).reverse()
       value = get_reset_value(recent_reset, rules)
+      
+      keys.forEach(key=>{
+        if(final_oper_obj[key].oper !== 1) {
+          const info = final_oper_obj[key]
+          const val = my_dayjs(key).valueOf()
+          if(recent_reset.valueOf() < val && val < date.valueOf()) {
+            if(info.oper === 2) value += info.value
+            else if(info.oper === 3) value -= info.value
+          }
+        }
+      })
+
       rules.forEach(rule=>{
         const diff_val = curr_date.diff(recent_reset, 'day')
         let iter = -1
