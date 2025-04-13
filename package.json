@@ -1,9 +1,9 @@
 {
   "private": true,
-  "name": "my-nextron-app",
-  "description": "My application description",
+  "name": "amazing_calendar",
+  "description": "oh hi uwu",
   "version": "1.0.0",
-  "author": "Yoshihide Shiono <shiono.yoshihide@gmail.com>",
+  "author": "_ = F = _ (blog: memory.with-1f.work)",
   "main": "app/background.js",
   "scripts": {
     "dev": "nextron",
