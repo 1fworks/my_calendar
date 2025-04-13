@@ -1,18 +1,26 @@
 import { CalendarRulesInfo } from "@/components/calendar/interface";
 import { Dayjs } from "dayjs";
 import lodash from 'lodash';
-import { load_rules, Rules } from "./load_file";
+import { load_rules, ProfileData, Rules } from "./load_file";
 
-export const getSavfileName = (savfileSlot:number) => {
+export const getSavfileName = (savfileSlot:number|string) => {
   return `./savfiles/sav-${savfileSlot}.json`
 }
 
-export const getMemofileName = (savfileSlot:number, date:Dayjs) => {
+export const getMemofileName = (savfileSlot:number|string, date:Dayjs) => {
   return `./savfiles/memos/${savfileSlot}/memo-${date.format('YYYY-MM-DD')}.json`
 }
 
+export const getProfileName = () => {
+  return `./savfiles/setting.json`
+}
+
+export const save_profile_setting = async(data: ProfileData) => {
+  await window.ipc.saveFile(getProfileName(), data)
+}
+
 export const save_memo = async(
-  savfileSlot:number,
+  savfileSlot:number|string,
   date:Dayjs,
   memoContent:string,
   favorite:boolean
@@ -28,7 +36,7 @@ export const save_memo = async(
 }
 
 export const save_file = async(
-  savfileSlot:number,
+  savfileSlot:number|string,
   date:Dayjs,
   memoContent:string,
   favorite:boolean,
@@ -38,7 +46,7 @@ export const save_file = async(
   const rulesInfoData = await load_rules(savfileSlot)
 
   const data: Rules[] = rulesInfo.map((info, i)=>{
-    const idx = rulesInfoData.map(data=>data.uuid).indexOf(info.uuid)
+    const idx = rulesInfoData!==undefined ? rulesInfoData.map(data=>data.uuid).indexOf(info.uuid) : -1
     const new_oper = idx > -1 ? rulesInfoData[idx].final_oper : {}
     const key = date.format('YYYY-MM-DD')
     if(info.final_operation.operation > 0) {
@@ -70,7 +78,7 @@ export const save_file = async(
   await save_memo(savfileSlot, date, memoContent, favorite)
 }
 
-export const heart_toggle = async(savfileSlot:number, date:Dayjs) => {
+export const heart_toggle = async(savfileSlot:number|string, date:Dayjs) => {
   const data = await window.ipc.loadFile(getMemofileName(savfileSlot, date))
   if(data) {
     if(typeof(data.favorite)==='boolean') {

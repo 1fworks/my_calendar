@@ -18,7 +18,7 @@ export const Canlendar = () => {
 	const [ items, setItems ] = useState<CalendarItemDataset[]>([])
 	const [ detailTrigger, setDetailTrigger ] = useState<string>('')
 
-	const [ savfileSlot, setSavefileSlot ] = useState<number>(1)
+	const [ savfileSlot, setSavefileSlot ] = useState<string|undefined>(undefined)
 
 	const resetCalendarData = async() => {
 		const start = time.startOf('month').day() // 0 (Sunday) to 6 (Saturday)
@@ -37,7 +37,7 @@ export const Canlendar = () => {
 		const result: CalendarItemDataset[] = []
 		// =============================================================
 		const rulesInfos = await load_rules(savfileSlot)
-		const info_ary = rulesInfos ? rulesInfos.map(element=>{
+		const info_ary = rulesInfos !== undefined ? rulesInfos.map(element=>{
 			const rulesInfo = lodash.cloneDeep(element)
 			if(!rulesInfo) return undefined
 			return (
@@ -113,9 +113,9 @@ export const Canlendar = () => {
 				}
 			})
 		}
-		setItems(calculate_var(result, rulesInfos.map(r=>{
+		setItems(calculate_var(result, rulesInfos?rulesInfos.map(r=>{
 			return ({ uuid: r.uuid, final_oper: r.final_oper })
-		})))
+		}):[]))
 	}
 
 	useEffect(() => {
@@ -125,7 +125,9 @@ export const Canlendar = () => {
 			setDate(now.format('YYYY-MM'))
 		}
 		else {
-			resetCalendarData()
+			if(savfileSlot !== undefined) {
+				resetCalendarData()
+			}
 		}
 	}, [time, savfileSlot]);
 
@@ -169,6 +171,7 @@ export const Canlendar = () => {
 					/>
 					<Profile
 						savfileSlot={savfileSlot}
+						setSavefileSlot={setSavefileSlot}
 					/>
 					<ThemeSwitch />
 				</div>
@@ -197,7 +200,7 @@ export const Canlendar = () => {
 						<button className="ml-2 p-2" onClick={nextPage}><BsChevronRight /></button>
 					</div>
 				</div>
-				{ check &&
+				{ check && savfileSlot !== undefined &&
 					<>
 						<div className='calendar-grid pt-5'>
 							{ header.map((val, i)=>{

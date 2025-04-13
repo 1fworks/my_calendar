@@ -5,7 +5,7 @@ import { FaSave } from "react-icons/fa";
 import { DividingLine } from "./dividingLine";
 import { CanlendarItemDetail } from "./calendarItemDetail";
 import { ItemInfo } from "./ItemInfo";
-import { CalendarItemDataset, CalendarRule, CalendarRulesInfo } from "./interface";
+import { CalendarItemDataset, CalendarRulesInfo } from "./interface";
 import lodash from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { save_file } from "@/lib/savload/save_file";
@@ -17,7 +17,7 @@ export const Item = ({
   // setItem,
   resetCalendar,
 }:{
-  savfileSlot:number,
+  savfileSlot:number|string,
 	itemDetail:CalendarItemDataset,
   detailTrigger: {
     val: string,
@@ -31,6 +31,7 @@ export const Item = ({
   const [ rules, setRules ] = useState<CalendarRulesInfo[]>(lodash.cloneDeep(itemDetail.info.ary))
   
   const save = async() => {
+    console.log(rules)
     await save_file(savfileSlot, itemDetail.date, memoContent, itemDetail.info.favorite, lodash.cloneDeep(rules))
     await resetCalendar()
   }

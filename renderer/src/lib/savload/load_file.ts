@@ -1,5 +1,13 @@
 import { Dayjs } from "dayjs"
-import { getMemofileName, getSavfileName } from "./save_file"
+import { getMemofileName, getProfileName, getSavfileName } from "./save_file"
+
+export interface ProfileData {
+  curr: string,
+  ary: {
+    uuid: string,
+    alias: string
+  }[]
+}
 
 export interface Rules {
   uuid: string,
@@ -25,16 +33,21 @@ export interface Memo {
 }
 
 export const load_rules = async(
-  savfileSlot:number,
+  savfileSlot:number|string,
 ) => {
   const data: undefined|Rules[] = await window.ipc.loadFile(getSavfileName(savfileSlot))
   return data
 }
 
 export const load_memo = async(
-  savfileSlot:number,
+  savfileSlot:number|string,
   date:Dayjs,
 )=>{
   const data: undefined|Memo = await window.ipc.loadFile(getMemofileName(savfileSlot, date))
+  return data
+}
+
+export const load_profile = async() => {
+  const data: undefined|ProfileData = await window.ipc.loadFile(getProfileName())
   return data
 }

@@ -23,7 +23,7 @@ export const NoteBook = ({
   nextPage,
 }:{
   items:CalendarItemDataset[],
-  savfileSlot:number,
+  savfileSlot:number|string,
   setDetailTrigger:Dispatch<SetStateAction<string>>,
   resetCalendarData: () => Promise<void>
   date:string,
@@ -65,112 +65,114 @@ export const NoteBook = ({
 
 	return (
     <>
-      <div
-        className={`overlay ${active?'overlay-active cursor-pointer':''}`}
-        onClick={()=>{
-          if(active) setActive(false)
-        }}
-      >
-        <div className="overlay-shadow" />
-        <div className="drawer" onClick={e=>e.stopPropagation()}>
-          { active && 
-            <div className="w-full h-full flex flex-col gap-2">
-              <div className="w-full ml-auto pt-2 pl-2 pr-2 flex flex-row gap-2">
-                <div className="flex-1 flex flex-row gap-2">
-                  <button className="div-border py-1 px-3" onClick={()=>{setCategory(0)}}>
-                    <div className="font-bold text-lg memo-underline flex flex-row items-center gap-1">
-                      { category===0 && <FaCheck /> }
-                      <span className={category===0?'':'opacity-50'}>
-                        메모지
-                      </span>
-                    </div>
-                  </button>
-                  <button className="div-border py-1 px-3" onClick={()=>{setCategory(1)}}>
-                    <div className="font-bold text-lg flex flex-row items-center gap-1">
-                      { category===1 && <FaCheck /> }
-                      <span className={category===1?'':'opacity-50'}>
-                        변수
-                      </span>
-                    </div>
+      { savfileSlot !== undefined &&
+        <div
+          className={`overlay ${active?'overlay-active cursor-pointer':''}`}
+          onClick={()=>{
+            if(active) setActive(false)
+          }}
+        >
+          <div className="overlay-shadow" />
+          <div className="drawer" onClick={e=>e.stopPropagation()}>
+            { active && 
+              <div className="w-full h-full flex flex-col gap-2">
+                <div className="w-full ml-auto pt-2 pl-2 pr-2 flex flex-row gap-2">
+                  <div className="flex-1 flex flex-row gap-2">
+                    <button className="div-border py-1 px-3" onClick={()=>{setCategory(0)}}>
+                      <div className="font-bold text-lg memo-underline flex flex-row items-center gap-1">
+                        { category===0 && <FaCheck /> }
+                        <span className={category===0?'':'opacity-50'}>
+                          메모지
+                        </span>
+                      </div>
+                    </button>
+                    <button className="div-border py-1 px-3" onClick={()=>{setCategory(1)}}>
+                      <div className="font-bold text-lg flex flex-row items-center gap-1">
+                        { category===1 && <FaCheck /> }
+                        <span className={category===1?'':'opacity-50'}>
+                          변수
+                        </span>
+                      </div>
+                    </button>
+                  </div>
+                  <button
+                    className="theme-switch"
+                    onClick={()=>{
+                      if(active) setActive(false)
+                    }}
+                  >
+                    <MdCancel />
                   </button>
                 </div>
-                <button
-                  className="theme-switch"
-                  onClick={()=>{
-                    if(active) setActive(false)
-                  }}
-                >
-                  <MdCancel />
-                </button>
-              </div>
-              <div className="px-2 flex flex-row justify-center items-center">
-                <button className="super-mini-svg" onClick={prevPage}><BsChevronLeft /></button>
-                <span className="px-2">{my_dayjs(date).format('YYYY MMMM')}</span>
-                <button className="super-mini-svg" onClick={nextPage}><BsChevronRight /></button>
-              </div>
-              <div className="relative flex-1 overflow-y-scroll mr-2 pb-3">
-                <div className="flex flex-col gap-2">
-                  { category===0 && memos.map((item, i)=>{
-                    if(item.info.memo.length > 0)
-                    return (
-                      <div
-                        className={`${item.info.favorite?'':'item-detail'} mx-2 p-2 div-border mini-svg h-fit flex flex-row gap-2`}
-                        key={`memo - ${i}`}
-                      >
-                        <div className="w-fit h-fit">
-                          <button className="theme-switch" onClick={async()=>{await heartToggle(item.date, i)}}>
-                            {item.info.favorite?<FaHeart className="fill-rose-500" />:<FaHeartBroken />}
-                          </button>
-                        </div>
-                        <div className="flex-1 flex flex-col">
-                          <div className="text-sm">
-                            {item.date.format('LL')}
-                          </div>
-                          <div className={`memo-content ${item.info.favorite ? 'font-bold' : ''}`}>
-                            {item.info.memo}
-                          </div>
-                        </div>
-                        <div className="w-fit h-fit">
-                          <button className="theme-switch" onClick={()=>{openDetailPage(item)}}><FiEdit /></button>
-                        </div>
-                      </div>
-                    )}).filter(element=>element!==undefined)
-                  }
-                  {
-                    category===1 && memos.map((item, i)=>{
+                <div className="px-2 flex flex-row justify-center items-center">
+                  <button className="super-mini-svg" onClick={prevPage}><BsChevronLeft /></button>
+                  <span className="px-2">{my_dayjs(date).format('YYYY MMMM')}</span>
+                  <button className="super-mini-svg" onClick={nextPage}><BsChevronRight /></button>
+                </div>
+                <div className="relative flex-1 overflow-y-scroll mr-2 pb-3">
+                  <div className="flex flex-col gap-2">
+                    { category===0 && memos.map((item, i)=>{
+                      if(item.info.memo.length > 0)
                       return (
                         <div
-                          className={`mx-2 p-2 div-border mini-svg h-fit flex flex-row gap-2`}
-                          key={`variable - ${i}`}
+                          className={`${item.info.favorite?'':'item-detail'} mx-2 p-2 div-border mini-svg h-fit flex flex-row gap-2`}
+                          key={`memo - ${i}`}
                         >
+                          <div className="w-fit h-fit">
+                            <button className="theme-switch" onClick={async()=>{await heartToggle(item.date, i)}}>
+                              {item.info.favorite?<FaHeart className="fill-rose-500" />:<FaHeartBroken />}
+                            </button>
+                          </div>
                           <div className="flex-1 flex flex-col">
                             <div className="text-sm">
                               {item.date.format('LL')}
                             </div>
-                            {
-                              item.info.ary.map(v=>{
-                                return (
-                                  <div className={`memo-content ${item.info.favorite ? 'font-bold' : ''}`}>
-                                    <span className="font-normal mr-1">• {v.alias}:</span>
-                                    <span className={state[v.state]}>{v.value} {state_msg[v.state]}</span>
-                                  </div>
-                                )
-                              })
-                            }
+                            <div className={`memo-content ${item.info.favorite ? 'font-bold' : ''}`}>
+                              {item.info.memo}
+                            </div>
                           </div>
                           <div className="w-fit h-fit">
                             <button className="theme-switch" onClick={()=>{openDetailPage(item)}}><FiEdit /></button>
                           </div>
                         </div>
-                      )
-                    })
-                  }
+                      )}).filter(element=>element!==undefined)
+                    }
+                    {
+                      category===1 && memos.map((item, i)=>{
+                        return (
+                          <div
+                            className={`mx-2 p-2 div-border mini-svg h-fit flex flex-row gap-2`}
+                            key={`variable - ${i}`}
+                          >
+                            <div className="flex-1 flex flex-col">
+                              <div className="text-sm">
+                                {item.date.format('LL')}
+                              </div>
+                              {
+                                item.info.ary.map(v=>{
+                                  return (
+                                    <div className={`memo-content ${item.info.favorite ? 'font-bold' : ''}`}>
+                                      <span className="font-normal mr-1">• {v.alias}:</span>
+                                      <span className={state[v.state]}>{v.value} {state_msg[v.state]}</span>
+                                    </div>
+                                  )
+                                })
+                              }
+                            </div>
+                            <div className="w-fit h-fit">
+                              <button className="theme-switch" onClick={()=>{openDetailPage(item)}}><FiEdit /></button>
+                            </div>
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
                 </div>
               </div>
-            </div>
-          }
+            }
+          </div>
         </div>
-      </div>
+      }
       <button
         className="theme-switch"
         onClick={()=>{

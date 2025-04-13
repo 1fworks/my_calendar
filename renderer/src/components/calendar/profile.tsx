@@ -1,21 +1,63 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { LuUser } from "react-icons/lu";
-import { FaCheck } from "react-icons/fa";
+import { RiDeleteBin2Fill } from "react-icons/ri";
 import { BiPlusCircle } from "react-icons/bi";
+import { FaCheck } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
+import { load_profile, ProfileData } from "@/lib/savload/load_file";
+import { save_profile_setting } from "@/lib/savload/save_file";
+import lodash from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 
 export const Profile = ({
   savfileSlot,
+  setSavefileSlot
 }:{
-  savfileSlot: number,
+  savfileSlot: string,
+  setSavefileSlot: Dispatch<SetStateAction<string>>
 }) => {
   const [ active, setActive ] = useState<boolean>(false)
+  const [ currSavSlot, setCurrSavSlot ] = useState<string|undefined>(undefined)
+  const [ profileData, setProfileData ] = useState<ProfileData|undefined>(undefined)
 
   useEffect(()=>{
     if(!active) {
-      // save
+      if(currSavSlot !== undefined) {
+        if(savfileSlot !== currSavSlot) {
+          setSavefileSlot(currSavSlot)
+        }
+        save_profile_setting(profileData)
+      }
     }
-  }, [active])
+
+    if(currSavSlot === undefined) {
+      const load_profile_setting = async() => {
+        const data = await load_profile()
+        if(data !== undefined && data?.curr !== undefined && Array.isArray(data?.ary) && data?.ary.find(v=>v.uuid === data.curr) !== undefined) {
+          setProfileData(data)
+          setCurrSavSlot(data.curr)
+          setSavefileSlot(data.curr)
+        }
+        else {
+          const new_uuid = uuidv4()
+          const default_data = {
+            curr: new_uuid,
+            ary: [
+              {
+                uuid: new_uuid,
+                alias: 'My Profile :)'
+              }
+            ]
+          }
+          save_profile_setting(default_data)
+          setProfileData(default_data)
+          setCurrSavSlot(new_uuid)
+          setSavefileSlot(new_uuid)
+        }
+      }
+      load_profile_setting()
+    }
+  }, [active, currSavSlot])
 
 	return (
     <>
@@ -47,17 +89,55 @@ export const Profile = ({
               <div className="relative flex-1 overflow-y-scroll mr-2 pb-3 px-2">
                 <div className="flex flex-col gap-2">
 
-                  <div className="flex flex-row items-center gap-1">
-                    <button className="div-border theme-switch">
-                      {/* <FaCheck /> */}
-                      <LuUser />
-                    </button>
-                    <input className="div-border py-1 px-2" value="My Profile" />
-                  </div>
+                  { profileData.ary.map((data, i)=>{
+                    return (
+                      <div className="flex flex-row items-center gap-1" key={`profile slot ${data.uuid}`}>
+                        <button className="div-border theme-switch" onClick={()=>{
+                          const new_data = lodash.cloneDeep(profileData)
+                          new_data.curr = data.uuid
+                          setProfileData(new_data)
+                          setCurrSavSlot(data.uuid)
+                        }}>
+                          { data.uuid === profileData.curr ?
+                            <div className={`rotate-6`}>
+                              <FaCheck className="fill-teal-500" />
+                            </div>
+                            : <LuUser />
+                          }
+                        </button>
+                        <input className={`div-border py-1 px-2 ${data.uuid === profileData.curr ? 'font-bold' : 'opacity-50'}`} value={data?.alias ? data?.alias : 'My Profile :)'} onChange={(e)=>{
+                          const new_data = lodash.cloneDeep(profileData)
+                          new_data.ary[i].alias = e.target.value
+                          setProfileData(new_data)
+                        }}/>
+                        <button className={`mini-svg ${profileData.ary.length <= 1 ? 'opacity-50':''}`} disabled={profileData.ary.length <= 1} onClick={()=>{
+                          if(profileData.ary.length > 0) {
+                            const new_data = lodash.cloneDeep(profileData)
+                            new_data.ary.splice(i, 1)
+                            if(currSavSlot === profileData.curr) {
+                              setCurrSavSlot(new_data.ary[0].uuid)
+                              new_data.curr = new_data.ary[0].uuid
+                            }
+                            setProfileData(new_data)
+                          }
+                        }}>
+                          <RiDeleteBin2Fill />
+                        </button>
+                      </div>
+                      )
+                    })
+                  }
 
                   <hr className="opacity-50" />
 
-                  <button className="div-border mini-svg flex flex-row items-center justify-center">
+                  <button className="div-border mini-svg flex flex-row items-center justify-center" onClick={()=>{
+                    const new_data = lodash.cloneDeep(profileData)
+                    new_data.ary.push({
+                      uuid: uuidv4(),
+                      alias: 'New Profile!'
+                    })
+                    setProfileData(new_data)
+                  }}>
                     <BiPlusCircle />
                     <span>add new profile</span>
                   </button>
