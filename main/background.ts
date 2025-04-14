@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs'
-import { app, ipcMain, shell } from 'electron'
+import { app, ipcMain, Menu, MenuItem, shell } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
 
@@ -16,14 +16,37 @@ if (isProd) {
   await app.whenReady()
 
   const mainWindow = createWindow('main', {
-    width: 1000,
-    height: 600,
+    width: 800,
+    height: 800,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
     },
+    // autoHideMenuBar: true,
   })
+
+  const newMenu = new Menu()
+  newMenu.append(new MenuItem({
+    label: 'View',
+    submenu: [
+      { role: 'reload' },
+      { type: 'separator' },
+      { role: 'resetZoom' },
+      { role: 'zoomIn' },
+      { role: 'zoomOut' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' }
+    ]
+  }))
+  newMenu.append(new MenuItem({
+    label: 'About',
+    submenu: [
+      { label: 'developer blog', click: async() => { shell.openExternal('https://memory.with-1f.work') } },
+      { label: 'report issue', click: async() => { shell.openExternal('https://github.com/1fworks/my_calendar/issues/new') } }
+    ]
+  }))
+  mainWindow.setMenu(newMenu)
 
   if (isProd) {
     await mainWindow.loadURL('app://./home')
