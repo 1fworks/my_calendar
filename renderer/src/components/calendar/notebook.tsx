@@ -153,7 +153,7 @@ export const NoteBook = ({
                                   return (
                                     <div className={`memo-content ${item.info.favorite ? 'font-bold' : ''}`}>
                                       <span className="font-normal mr-1">• {v.alias}:</span>
-                                      <span className={state[v.state]}>{v.value} {state_msg[v.state]}</span>
+                                      <span className={`${state[v.state]} ${v.value!==undefined?'':'opacity-20'}`}>{v.value!==undefined?v.value:'???'} {state_msg[v.state]}</span>
                                     </div>
                                   )
                                 })

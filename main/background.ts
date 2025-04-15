@@ -46,6 +46,12 @@ if (isProd) {
       { label: 'report issue', click: async() => { shell.openExternal('https://github.com/1fworks/my_calendar/issues/new') } }
     ]
   }))
+  if(!isProd) {
+    newMenu.append(new MenuItem({
+      label: 'Dev Mode',
+      role: 'toggleDevTools'
+    }))
+  }
   mainWindow.setMenu(newMenu)
 
   if (isProd) {
