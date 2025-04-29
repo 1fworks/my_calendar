@@ -105,7 +105,7 @@ export const Canlendar = () => {
 			result.push({
 				val: val,
 				isCurrMonth: isCurrMonth,
-				date: date,
+				date: my_dayjs(date.format('YYYY-MM-DD')),
 				info: {
 					memo: memo.content,
 					favorite: memo.favorite,
