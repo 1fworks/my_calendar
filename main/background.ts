@@ -76,6 +76,7 @@ ipcMain.handle("open-external", async(_, url:string)=>{
 })
 
 ipcMain.handle("load-file", async(_, filename:string)=>{
+  filename = path.join(app.getPath('userData'), filename)
   if(fs.existsSync(filename)) {
     const buffer = fs.readFileSync(filename, 'utf-8')
     const json_data = JSON.parse(buffer)
@@ -85,12 +86,14 @@ ipcMain.handle("load-file", async(_, filename:string)=>{
 })
 
 ipcMain.handle("save-file", async(_, filename:string, data:object)=>{
+  filename = path.join(app.getPath('userData'), filename)
   const dir = path.dirname(filename);
   if(!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
   fs.writeFileSync(filename, JSON.stringify(data, null, 2))
 })
 
 ipcMain.handle("rm-file", async(_, filename:string)=>{
+  filename = path.join(app.getPath('userData'), filename)
   if(fs.existsSync(filename)){
     fs.rmSync(filename)
   }
