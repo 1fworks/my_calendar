@@ -30,5 +30,10 @@ export interface CalendarItemDataset {
   val: number,
   isCurrMonth: boolean,
   date: Dayjs,
-  info: CalendarItemInfo
+  info: CalendarItemInfo,
+  loading: boolean,
+}
+
+export interface CalendarItemDatasetWithDateISOString extends CalendarItemDataset {
+  date_string: string,
 }

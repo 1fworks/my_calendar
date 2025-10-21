@@ -1,15 +1,14 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import my_dayjs from "@/lib/mydayjs"
 import { Item } from './calendarItem'
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { CurrTime } from "./currTime";
 import { ThemeSwitch } from "../themeSwitch";
 import { NoteBook } from "./notebook";
-import { CalendarItemDataset } from './interface';
+import { CalendarItemDataset, CalendarItemDatasetWithDateISOString } from '@/components/calendar/interface';
 import lodash from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { load_memo, load_rules } from "@/lib/savload/load_file";
-import { calculate_var } from "@/lib/calculationVar";
 import { Profile } from "./profile";
 
 export const Canlendar = () => {
@@ -19,8 +18,11 @@ export const Canlendar = () => {
 	const [ detailTrigger, setDetailTrigger ] = useState<string>('')
 
 	const [ savfileSlot, setSavefileSlot ] = useState<string|undefined>(undefined)
+	const workerRef = useRef<null|Worker>(null)
+	const verCounter = useRef<number>(0)
 
 	const resetCalendarData = async() => {
+		const counter = verCounter.current
 		const start = time.startOf('month').day() // 0 (Sunday) to 6 (Saturday)
 		const last = time.endOf('month').date() // 1 ~ 31
 
@@ -34,7 +36,7 @@ export const Canlendar = () => {
 			item_data_ary.push(-(i+1))
 		}
 
-		const result: CalendarItemDataset[] = []
+		const result: CalendarItemDatasetWithDateISOString[] = []
 		// =============================================================
 		const rulesInfos = await load_rules(savfileSlot)
 		const info_ary = rulesInfos !== undefined ? rulesInfos.map(element=>{
@@ -106,19 +108,40 @@ export const Canlendar = () => {
 				val: val,
 				isCurrMonth: isCurrMonth,
 				date: my_dayjs(date.format('YYYY-MM-DD')),
+				date_string: my_dayjs(date.format('YYYY-MM-DD')).toISOString(),
 				info: {
 					memo: memo.content,
 					favorite: memo.favorite,
 					ary: ary,
-				}
+				},
+				loading: true,
 			})
 		}
-		setItems(calculate_var(result, rulesInfos?rulesInfos.map(r=>{
-			return ({ uuid: r.uuid, final_oper: r.final_oper })
-		}):[]))
+		setItems(result.slice(1))
+		if(verCounter.current === counter) {
+			workerRef.current?.postMessage({
+				type:'start',
+				result: result,
+				rulesInfos: rulesInfos,
+				verCounter: counter
+			})
+		}
 	}
 
 	useEffect(() => {
+		verCounter.current += 1
+		workerRef.current = new Worker(new URL('../../worker/worker.ts', import.meta.url))
+		workerRef.current.onmessage = (e) => {
+			if(e.data.type === 'items_data' && verCounter.current === e.data.verCounter) {
+				// console.log('updated!')
+				setItems(e.data.items.map(item => {
+					item.date = my_dayjs(item.date_string)
+					item.loading = false
+					return item
+				}))
+			}
+		}
+
 		if(time.valueOf() === my_dayjs('1111-1-1').valueOf()) {
 			const now = my_dayjs()
 			setTime(now)
@@ -128,6 +151,10 @@ export const Canlendar = () => {
 			if(savfileSlot !== undefined) {
 				resetCalendarData()
 			}
+		}
+		return () => {
+			workerRef.current?.terminate()
+			workerRef.current = null
 		}
 	}, [time, savfileSlot]);
 

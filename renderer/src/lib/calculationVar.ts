@@ -1,4 +1,4 @@
-import { CalendarItemDataset, CalendarRule, CalendarRulesInfo } from "@/components/calendar/interface";
+import { CalendarItemDatasetWithDateISOString, CalendarRule, CalendarRulesInfo } from "@/components/calendar/interface";
 import { Dayjs } from "dayjs";
 import my_dayjs from "./mydayjs";
 import lodash from 'lodash';
@@ -245,7 +245,7 @@ const calculate = (
 }
 
 export const calculate_var = (
-  dataset: CalendarItemDataset[],
+  dataset: CalendarItemDatasetWithDateISOString[],
   final_oper_data: {
     uuid: string,
     final_oper : { [key:string] : { value: number, oper: number } }

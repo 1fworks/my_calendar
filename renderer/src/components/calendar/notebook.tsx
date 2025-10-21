@@ -116,7 +116,7 @@ export const NoteBook = ({
                       return (
                         <div
                           className={`${item.info.favorite?'':'item-detail'} mx-2 p-2 div-border mini-svg h-fit flex flex-row gap-2`}
-                          key={`memo - ${i}`}
+                          key={`memo - ${item.date.format('LL')}`}
                         >
                           <div className="w-fit h-fit">
                             <button className="theme-switch" onClick={async()=>{await heartToggle(item.date, i)}}>
@@ -142,16 +142,16 @@ export const NoteBook = ({
                         return (
                           <div
                             className={`mx-2 p-2 div-border mini-svg h-fit flex flex-row gap-2`}
-                            key={`variable - ${i}`}
+                            key={`variable - ${item.date.format('LL')}`}
                           >
                             <div className="flex-1 flex flex-col">
                               <div className="text-sm">
                                 {item.date.format('LL')}
                               </div>
                               {
-                                item.info.ary.map(v=>{
+                                item.info.ary.map((v, i)=>{
                                   return (
-                                    <div className={`memo-content ${item.info.favorite ? 'font-bold' : ''}`}>
+                                    <div className={`memo-content ${item.info.favorite ? 'font-bold' : ''}`} key={`v-${i}-${v.alias}`}>
                                       <span className="font-normal mr-1">• {v.alias}:</span>
                                       <span className={`${state[v.state]} ${v.value!==undefined?'':'opacity-20'}`}>{v.value!==undefined?v.value:'???'} {state_msg[v.state]}</span>
                                     </div>

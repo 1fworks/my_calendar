@@ -168,11 +168,16 @@ export const Item = ({
           { (itemDetail.info.ary.length > 0 || itemDetail.info.memo.length > 0) &&
             <ItemInfo info={itemDetail.info} id={`slot-${itemDetail.date.format('YYYY-MM-DD')}`}/>
           }
-          <button className={`calendar-circle ${itemDetail.info.memo.length > 0?'memo-underline':''}`} onClick={showDetail}>
+          <button className={`calendar-circle ${itemDetail.info.memo.length > 0?'memo-underline':''}`} onClick={showDetail} disabled={itemDetail.loading}>
             <div className={`w-fit h-fit relative ${val_edit?'ping-edit':''}`}>
               { val_update &&
                 <div className="absolute ping -right-2 -top-1">
                   <div className="absolute ping animate-ping" />
+                </div>
+              }
+              { itemDetail.loading &&
+                <div className="absolute min-[480px]:size-8 size-6 left-1/2 top-1/2">
+                  <div className="absolute min-[480px]:size-8 size-6 bg-gray-400 opacity-50 right-1/2 bottom-1/2 animate-spin rounded-md" />
                 </div>
               }
               {itemDetail.date.format('D')}
