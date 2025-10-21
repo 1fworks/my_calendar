@@ -2,7 +2,7 @@
   "private": true,
   "name": "amazing_calendar",
   "description": "oh hi uwu",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "_ = F = _ (blog: memory.with-1f.work)",
   "main": "app/background.js",
   "scripts": {

@@ -9,6 +9,7 @@ import { CalendarItemDataset, CalendarRulesInfo } from "./interface";
 import lodash from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { save_file } from "@/lib/savload/save_file";
+import my_dayjs from "@/lib/mydayjs";
 
 export const Item = ({
   savfileSlot,
@@ -97,6 +98,7 @@ export const Item = ({
   const state = !lodash.isEqual(itemDetail.info.memo, memoContent) || !lodash.isEqual(itemDetail.info.ary, rules)
   const val_update = itemDetail.info.ary.map(info=>info.state > 0).filter(element=>element===true).length > 0
   const val_edit = itemDetail.info.ary.map(info=>info.final_operation.operation > 0).filter(element=>element===true).length > 0
+  const isMyBirthday = (my_dayjs().format('YYYY-MM-DD') === itemDetail.date.format('YYYY-MM-DD'))
 
 	return (
     <>
@@ -169,7 +171,7 @@ export const Item = ({
             <ItemInfo info={itemDetail.info} id={`slot-${itemDetail.date.format('YYYY-MM-DD')}`}/>
           }
           <button className={`calendar-circle ${itemDetail.info.memo.length > 0?'memo-underline':''}`} onClick={showDetail} disabled={itemDetail.loading}>
-            <div className={`w-fit h-fit relative ${val_edit?'ping-edit':''}`}>
+            <div className={`w-fit h-fit relative ${val_edit?'ping-edit':''} ${isMyBirthday?'font-extrabold scale-125 animate-pulse':''}`}>
               { val_update &&
                 <div className="absolute ping -right-2 -top-1">
                   <div className="absolute ping animate-ping" />
@@ -180,7 +182,9 @@ export const Item = ({
                   <div className="absolute min-[480px]:size-8 size-6 bg-gray-400 opacity-50 right-1/2 bottom-1/2 animate-spin rounded-md" />
                 </div>
               }
-              {itemDetail.date.format('D')}
+              <div className={`w-full h-full ${itemDetail.info.memo.length > 0?'animate-bounce':''}`}>
+                {itemDetail.date.format('D')}
+              </div>
             </div>
           </button>
         </div>
