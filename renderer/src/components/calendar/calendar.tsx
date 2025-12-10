@@ -207,7 +207,7 @@ export const Canlendar = () => {
 					<div className="current-data grid grid-flow-col items-center pt-1">
 						<button className="mr-2 p-2" onClick={prevPage}><BsChevronLeft /></button>
 						<div className="w-fit flex flex-row gap-1">
-              <input
+							<input
 								className="year-month div-border font-bold"
 								value={date}
 								type="month"

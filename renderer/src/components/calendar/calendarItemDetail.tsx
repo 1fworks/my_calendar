@@ -12,6 +12,7 @@ import { CalendarRule, CalendarRulesInfo } from "./interface";
 import lodash from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import my_dayjs from "@/lib/mydayjs";
+import { DelModal } from "./delModal";
 
 const Rule = ({
   num,
@@ -30,6 +31,7 @@ const Rule = ({
   deleteRule: ()=>void,
   changeRule: (option:number)=>void,
 }) => {
+  const [ modalActive, setModalActive ] = useState<boolean>(false)
   const [ ruleType, setRuleType ] = useState<string>(ruleData.ruleType)
   const [ ruleVal, setRuleVal ] = useState<string[]>(ruleData.ruleVal.map(val=>{return val.toString()}))
   const [ value, setValue ] = useState<string>(ruleData.value.toString())
@@ -107,7 +109,13 @@ const Rule = ({
             <option value='rule-6'>n일 간격으로</option>
           </select>
         </div>
-        <button className="mini-svg ml-auto" onClick={()=>{deleteRule()}}><RiDeleteBin2Fill/></button>
+        <button className="mini-svg ml-auto" onClick={()=>{setModalActive(true)}}><RiDeleteBin2Fill/></button>
+        { modalActive &&
+          <DelModal
+            closeModal={()=>{setModalActive(false)}}
+            delFunc={()=>{deleteRule()}}
+          />
+        }
       </div>
 
       { ruleType === 'rule-1' && /* 매년 n월 n일 */
@@ -235,6 +243,7 @@ export const CanlendarItemDetail = ({
   delVariable: Function,
   setRulesInfo: (rulesInfo:CalendarRulesInfo) => void
 }) => {
+  const [ modalActive, setModalActive ] = useState<boolean>(false)
   const [ openRule, setOpenRule ] = useState<boolean>(false)
   const [ alias, setAlias ] = useState<string>(ruleDetail.alias)
   const [ f_value, setF_value ] = useState<string>(ruleDetail.final_operation.value.toString())
@@ -318,7 +327,13 @@ export const CanlendarItemDetail = ({
           </div>
           <input className="ml-1 mr-2 p-1 text-lg font-bold text-nowrap max-w-36 div-border" value={alias} onChange={e=>setAlias(e.target.value)} />
           <div className="w-full flex items-end">
-            <button className="theme-switch ml-auto" onClick={delVar}><RiDeleteBin2Fill/></button>
+            <button className="theme-switch ml-auto" onClick={()=>{setModalActive(true)}}><RiDeleteBin2Fill/></button>
+            { modalActive &&
+              <DelModal
+                closeModal={()=>{setModalActive(false)}}
+                delFunc={delVar}
+              />
+            }
           </div>
         </div>
         

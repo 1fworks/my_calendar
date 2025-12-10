@@ -32,7 +32,6 @@ export const Item = ({
   const [ rules, setRules ] = useState<CalendarRulesInfo[]>(lodash.cloneDeep(itemDetail.info.ary))
   
   const save = async() => {
-    console.log(rules)
     await save_file(savfileSlot, itemDetail.date, memoContent, itemDetail.info.favorite, lodash.cloneDeep(rules))
     await resetCalendar()
   }

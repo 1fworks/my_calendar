@@ -8,6 +8,7 @@ import { load_profile, ProfileData } from "@/lib/savload/load_file";
 import { save_profile_setting } from "@/lib/savload/save_file";
 import lodash from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { DelModal } from "./delModal";
 
 export const Profile = ({
   savfileSlot,
@@ -16,6 +17,7 @@ export const Profile = ({
   savfileSlot: string,
   setSavefileSlot: Dispatch<SetStateAction<string>>
 }) => {
+  const [ modalActive, setModalActive ] = useState<boolean>(false)
   const [ active, setActive ] = useState<boolean>(false)
   const [ currSavSlot, setCurrSavSlot ] = useState<string|undefined>(undefined)
   const [ profileData, setProfileData ] = useState<ProfileData|undefined>(undefined)
@@ -105,24 +107,39 @@ export const Profile = ({
                             : <LuUser />
                           }
                         </button>
-                        <input className={`div-border py-1 px-2 ${data.uuid === profileData.curr ? 'font-bold' : 'opacity-50'}`} value={data?.alias ? data?.alias : 'My Profile :)'} onChange={(e)=>{
-                          const new_data = lodash.cloneDeep(profileData)
-                          new_data.ary[i].alias = e.target.value
-                          setProfileData(new_data)
-                        }}/>
-                        <button className={`mini-svg ${profileData.ary.length <= 1 ? 'opacity-50':''}`} disabled={profileData.ary.length <= 1} onClick={()=>{
-                          if(profileData.ary.length > 0) {
+                        <input className={`div-border py-1 px-2 ${data.uuid === profileData.curr ? 'font-bold' : 'opacity-50'}`} value={data?.alias ? data?.alias : ''}
+                          onChange={(e)=>{
                             const new_data = lodash.cloneDeep(profileData)
-                            new_data.ary.splice(i, 1)
-                            if(currSavSlot === profileData.curr) {
-                              setCurrSavSlot(new_data.ary[0].uuid)
-                              new_data.curr = new_data.ary[0].uuid
-                            }
+                            new_data.ary[i].alias = e.target.value
                             setProfileData(new_data)
-                          }
-                        }}>
+                          }}
+                          onBlur={(e)=>{
+                            if(e.target.value === ''){
+                              const new_data = lodash.cloneDeep(profileData)
+                              new_data.ary[i].alias = "My Profile :)"
+                              setProfileData(new_data)
+                            }
+                          }}
+                        />
+                        <button className={`mini-svg ${profileData.ary.length <= 1 ? 'opacity-50':''}`} disabled={profileData.ary.length <= 1} onClick={()=>{setModalActive(true)}}>
                           <RiDeleteBin2Fill />
                         </button>
+                        { modalActive &&
+                          <DelModal
+                            closeModal={()=>{setModalActive(false)}}
+                            delFunc={()=>{
+                              if(profileData.ary.length > 0) {
+                                const new_data = lodash.cloneDeep(profileData)
+                                new_data.ary.splice(i, 1)
+                                if(currSavSlot === profileData.curr) {
+                                  setCurrSavSlot(new_data.ary[0].uuid)
+                                  new_data.curr = new_data.ary[0].uuid
+                                }
+                                setProfileData(new_data)
+                              }
+                            }}
+                          />
+                        }
                       </div>
                       )
                     })
