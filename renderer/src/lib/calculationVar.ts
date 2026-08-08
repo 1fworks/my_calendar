@@ -165,33 +165,40 @@ const calculate = (
         let iter = -1
         if(rule.ruleType === 'rule-1') { // 매년 n월 n일
           const tmp = recent_reset.format('YYYY-MM-DD').split('-').map(v=>parseInt(v))
-          const curr = curr_date.add(1, 'day').format('YYYY-MM-DD').split('-').map(v=>parseInt(v))
-          iter = (curr[0] - tmp[0])
-          if(recent_reset.valueOf() <= recent_reset.set('month', rule.ruleVal[0]-1).set('date', rule.ruleVal[1]).valueOf()) {
-            iter += 1
+          const curr = curr_date.format('YYYY-MM-DD').split('-').map(v=>parseInt(v))
+          let date_reset = my_dayjs(`${tmp[0]}-${rule.ruleVal[0]}-${rule.ruleVal[1]}`)
+          if(tmp[1] > rule.ruleVal[0] || (tmp[1] === rule.ruleVal[0] && tmp[2] >= rule.ruleVal[1])) {
+            date_reset = my_dayjs(`${tmp[0]+1}-${rule.ruleVal[0]}-${rule.ruleVal[1]}`)
           }
-          if(curr_date_val <= curr_date.set('month', rule.ruleVal[0]-1).set('date', rule.ruleVal[1]).valueOf()) {
-            iter -= 1
+          iter = curr_date.diff(date_reset, 'day')
+          if(iter >= 0) {
+            iter = Math.floor(iter/365) + 1
           }
-          iter = Math.max(iter-1, 0)
+          iter = Math.max(iter, 0)
         }
         else if(rule.ruleType === 'rule-2') { // 매달 n일
           const tmp = recent_reset.format('YYYY-MM-DD').split('-').map(v=>parseInt(v))
-          const curr = curr_date.add(1, 'day').format('YYYY-MM-DD').split('-').map(v=>parseInt(v))
+          const curr = curr_date.format('YYYY-MM-DD').split('-').map(v=>parseInt(v))
           iter = (curr[0] - tmp[0]) * 12 + (curr[1] - tmp[1])
-          if(tmp[2] > rule.ruleVal[0]) {
+          if(curr[0] === tmp[0] && curr[1] === tmp[1] && curr[2] < rule.ruleVal[0]) {
             iter -= 1
           }
-          if(curr[2] > rule.ruleVal[0]) {
+          if(curr[2] >= rule.ruleVal[0]) {
             iter += 1
           }
-          iter = Math.max(iter-1, 0)
+          if(tmp[2] >= rule.ruleVal[0]) {
+            iter -= 1
+          }
+          iter = Math.max(iter, 0)
         }
         else if(rule.ruleType === 'rule-3') { // 매달 마지막 날
           const tmp = recent_reset.format('YYYY-MM').split('-').map(v=>parseInt(v))
           const curr = curr_date.add(1, 'day').format('YYYY-MM-DD').split('-').slice(0, 2).map(v=>parseInt(v))
           iter = (curr[0] - tmp[0]) * 12 + (curr[1] - tmp[1])
-          iter = Math.max(iter-1, 0)
+          if(recent_reset.endOf('month').date() === recent_reset.date()) [
+            iter -= 1
+          ]
+          iter = Math.max(iter, 0)
         }
         else if(rule.ruleType === 'rule-4') { // 매주 *요일
           const val_ary = rule.ruleVal.map((val, i)=>{
